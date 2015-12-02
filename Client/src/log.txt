@@ -1,0 +1,1044 @@
+commit 00b1578453aac239033a0e59e692bde19c22a6e5
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Nov 13 05:29:32 2015 -0500
+
+    Final Commit
+    
+    Working very well
+
+commit 91c0645cf17ef2aae142d59889d57cc35094e460
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Fri Nov 13 05:28:34 2015 -0500
+
+    Updated design doc
+    
+    Updated and replaced the design overview doc
+
+commit af99540dae3527284a2e1d8ea6f579568367ed5c
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Fri Nov 13 04:06:51 2015 -0500
+
+    Fixed simulator bug
+    
+    fixed bug in simulator where critters wouldn’t die
+
+commit 28e7053220ad35409b79dfe419c391c87b78590e
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Nov 13 04:03:27 2015 -0500
+
+    Implemented Zoom
+    
+    Also fixed map loading
+
+commit b8ad9c1c753c9a0ae4d5d368e76427448e0c2692
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Fri Nov 13 01:48:05 2015 -0500
+
+    Added methods to sim
+    
+    Added method to tell if a coordinate is valid and changed emptyCoords
+    method
+
+commit d09b089f9b51ac596a60cb7a2bfc23dafd79ef98
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Fri Nov 13 01:43:01 2015 -0500
+
+    Fixed draw map and sim
+    
+    fixed the draw map method in the view and some syntax in simulator
+
+commit 733f02fa8930c09d768e125b32a040d08a8bd9aa
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Nov 13 01:42:28 2015 -0500
+
+    added fill edges
+    
+    added method
+
+commit 89a127651d6c5fb090da38cd12d40bd8eff0a0cd
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Nov 13 00:00:05 2015 -0500
+
+    Final Simulator Edits
+
+commit 418f1d981b2a064d9c4b55c78f8a289c017bda3e
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 23:59:57 2015 -0500
+
+    Added overview doc
+    
+    added overview doc
+
+commit a56f10f2ea1aad704f3ff06094b58810f8b33ea7
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 23:41:50 2015 -0500
+
+    More step fixing
+    
+    Fixing more bugs in simulator step method
+
+commit 45beed77403361ebb78ebe00e3b81a0122b05731
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 23:39:21 2015 -0500
+
+    Implemented Multithreading
+    
+    Working quite well
+
+commit 122651213852086e33ecba8604a186e695690242
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 23:39:23 2015 -0500
+
+    Fixing step
+    
+    fixed a problem in the simulator step method
+
+commit 0852203297df9460b578cd09e13ad05323404394
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 23:26:14 2015 -0500
+
+    Fixing simulator
+    
+    Fixed simulator constructor with a file parameter
+
+commit 7b6e1b30111a493e39ea8de9d40cf0dfa85d99bd
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 22:28:05 2015 -0500
+
+    More model
+    
+    fixing more bugs in the model
+
+commit 87aa0d6680fc99ee411f267718b6406d98b831de
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 22:23:59 2015 -0500
+
+    Fix random coords
+    
+    fixes method in the simulator that finds random empty coords
+
+commit 34758f91bfc5e0f7c09715e7a96c255d8d096b23
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 22:23:50 2015 -0500
+
+    Fixing things
+    
+    Little bugs
+
+commit 0a8621954d2fa570f463a94be1f50a5e3582e64c
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 22:06:29 2015 -0500
+
+    bug fixing in model
+    
+    fixing parts of the model for efficiency and such
+
+commit 73744e2e75c1296e1adbd0e7ffbe4a2d8f867b5f
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 22:06:27 2015 -0500
+
+    Improved GUI
+    
+    Imlemented scollpane
+
+commit 084c5c44087528067a74756468cca7b5cdfc7ec8
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 21:45:15 2015 -0500
+
+    Fixed Food
+
+commit 8259bf3b24d3a3548805770721cc92919262b3f0
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 21:44:01 2015 -0500
+
+    Bug fixing
+    
+    fixing bugs in the model
+
+commit fe3ac5aaad4152cc9a444a2a7c9dc1482cea355b
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 21:16:13 2015 -0500
+
+    Fixed LoadWorld
+    
+    Working fully
+
+commit ae49e716817e650eb502d5e193049df31b05c901
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 20:35:23 2015 -0500
+
+    Improved Layout
+    
+    Spaced the menus and improved layout
+
+commit 155f34dc785e03063977b78a7c021fa4bba88ca4
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 20:11:04 2015 -0500
+
+    Debugging controller and model
+    
+    fixing bugs in the controller and model. Load critter at hex now is
+    working
+
+commit bd745df11601c2dde8972fd2e78c3bc366b026fc
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 19:53:11 2015 -0500
+
+    Fixing bugs in GUI
+    
+    Fixed a variety of bugs
+
+commit d5f8b3d93a18ac656bfd8d1b64f7bfc15a710378
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Nov 12 19:52:15 2015 -0500
+
+    Fixed model error
+    
+    fixed a model error
+
+commit c14934a0dac9f566f81704c6432fe833f0694c8a
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 18:53:05 2015 -0500
+
+    Working
+    
+    Fixed a bug
+
+commit 2f3021c1ae040238982c4fe2789f53454dae3296
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Nov 12 18:24:02 2015 -0500
+
+    Updating GUI
+    
+    Finishing and polishing GUI
+
+commit 8a20a2f1b5ce8d49d3a1fa07572d4743b8dd15b0
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Nov 11 22:37:30 2015 -0500
+
+    Work on controller
+    
+    Implementing controller methods
+
+commit a983316f2a36217902430a9502b53a31ac6d7911
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Nov 11 22:36:49 2015 -0500
+
+    Finished View
+    
+    Finished ApplicationView
+
+commit d65d99325e408dcdd4be5f8a2d95e6c30fdff8a3
+Merge: 4c4ea50 32a7698
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Nov 11 21:51:56 2015 -0500
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #	controller/ApplicationController.java
+
+commit 4c4ea50eec2b345b3c821129c0f86975d23ba13c
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Nov 11 21:49:36 2015 -0500
+
+    Implemented Controller and View
+    
+    Got the GUI working
+
+commit 32a769891e555abbc9a0dacdf8e2d505d3596391
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Mon Nov 9 16:19:08 2015 -0500
+
+    Controller and others
+    
+    Implemented methods for controller and added necessary methods to
+    critter and simulator
+
+commit 682ad6b79618fb7204c42daf14a3c6523a8c6146
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Sun Nov 8 17:57:25 2015 -0500
+
+    Implemented View Methods
+    
+    Also outlined controller methods and observer pattern
+
+commit 950ed2ce3bcac0c7b12996c4d5b63875caeafb91
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Sun Nov 8 15:57:04 2015 -0500
+
+    Changed written props
+    
+    Replaced written problems for A5 with the completed written problems
+    for A6
+
+commit f1066fe2e921d54c284ac4eb6935ce81d6c6c89a
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Sun Nov 8 15:55:34 2015 -0500
+
+    Setup JFX
+    
+    Created the gui
+
+commit 0bdf292f5084f89139dd120f765b433ffcc09074
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Oct 30 03:32:06 2015 -0400
+
+    Final Commit
+    
+    Final commit includes fully function version of all implementations
+
+commit dbe59d9932d0c7232fce41d627a4ac1618732f25
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 23:57:51 2015 -0400
+
+    removed file
+    
+    removed a4 overview
+
+commit 7a6760ca4aece30cef9af1ac6c029866e89e381b
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 23:55:09 2015 -0400
+
+    Added a4 diff
+    
+    Added a4.diff
+
+commit 52ced13eded42e05872b2b9031b55d8e11522023
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 23:54:54 2015 -0400
+
+    small housekeeping
+    
+    small housekeeping changes
+
+commit 56c991d61be621d5e7a676abb545ede4809ce2e9
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 23:48:56 2015 -0400
+
+    Huge Commit
+    
+    Lots of updates and bug fixes
+
+commit 617f100eff07978a0c4c52ea29b40ad57043a077
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 23:47:53 2015 -0400
+
+    Design overview
+    
+    Added completed a5 design overview document
+
+commit 7eb67a8f86d461d2fa584614111d7b70b17a8bf9
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 23:38:48 2015 -0400
+
+    Written Probs
+    
+    Finished written problems
+
+commit f98e63aed2707a908634badfd657190834e85dae
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 20:38:41 2015 -0400
+
+    New testing file
+    
+    add txt file for testing
+
+commit 9caca65f423f3e0f60802d700d6b2df3c843bf9f
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 20:33:40 2015 -0400
+
+    Parser debugging
+    
+    debugging the parser
+
+commit da5f064249a520d3219e4fdd21d52b4d2bdf8276
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 20:04:12 2015 -0400
+
+    Testing
+    
+    added new test for interpreter
+
+commit cba692f8c6bbcb329069aeb1a237455c9a9a8bf8
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 20:02:56 2015 -0400
+
+    Fixed Mutationswap
+
+commit 90f376f02e3edd94331adf5be3c57117be978a01
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 19:03:52 2015 -0400
+
+    Parser stuff
+    
+    More parser fixing
+
+commit a039172befd0dcfff08b4feab1f83c77e3cfee22
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 18:01:06 2015 -0400
+
+    Fixed loadCritter
+    
+    bugs
+
+commit e27a27a1a6efc12a134b4816662645f90fcdfb8d
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 18:01:07 2015 -0400
+
+    Parser fixes
+    
+    fixing consume method
+
+commit 6c80787cb8c6fe04ec4efa7a78f7e0f1e3793aac
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 17:34:50 2015 -0400
+
+    Testing and Parser bug
+    
+    Fixed a bug with the parser. More testing
+
+commit ad487068ffc2209b737cb30cbe2fb003330efeda
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 17:25:21 2015 -0400
+
+    Implementing Mutations
+    
+    Implementing mutation methods in program.
+
+commit 976e5b004427636aff738fab30cd52ac579f72be
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 16:48:33 2015 -0400
+
+    Small bug fixes and testing
+    
+    Added text files for use in testing. Fixed small bugs in A5Test and
+    Simulator
+
+commit 9e68b5626ab5791d7e4a6d97a0006a8bf4c15eb2
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 01:40:02 2015 -0400
+
+    Added World Printing
+    
+    Added the world printing method, and updated some of the test cases.
+    
+    All methods are implemented at this point besides the inclusion of AST
+    mutations.
+
+commit 356c6b68f267184ef273056bd204325bb5bc0630
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 29 01:06:54 2015 -0400
+
+    Finished Implementing Simulator and Critter
+    
+    Using a top down approach, I finished my implementation of simulator
+    and Critter.
+
+commit 714cabd6ad6b372f72f60078b8127681a9e0c7aa
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 29 00:58:59 2015 -0400
+
+    Testing
+    
+    Updates to tests. Need more information on implementation to fully
+    implement but mostly done
+
+commit 783c61fe9e76676b35ab23af6b7ee0a99fcc0563
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 28 22:04:39 2015 -0400
+
+    Small updates
+
+commit b7914c6c14d1bbc3959ec1521f75fc247e90c7af
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 21:34:22 2015 -0400
+
+    Fixed errors in Outcome testing
+    
+    Fixed small bugs in testOutcome in A5Test
+
+commit e6f34193db34359e49a59a078c3436ae3704c8b5
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 21:32:27 2015 -0400
+
+    Outcome fixes and Testing
+    
+    Outcome interface updated to define appropriate actions. Changes to
+    spec in OutcomeImpl. Testing updated to properly test Outcome
+    implementation
+
+commit 68bfd7752cdebe3c6c7c53701e8280b481f4f16f
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 21:20:04 2015 -0400
+
+    Small Interpreter bug
+    
+    Fixed one small bug in setMem in interpreter
+
+commit c7726364e47cb444ff17eaf38dc81b7296bd3a80
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 28 21:17:47 2015 -0400
+
+    Implemented a lot of methods in Console, Simulator, and Critter
+    
+    Added critical methods to console critter and simulator
+
+commit 12744fb9ea25adac1620a41e625e14f653c8bac5
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 21:14:56 2015 -0400
+
+    Semantics
+    
+    This makes interpreter look prettier
+
+commit 5986ff581d4d6ba047295093f334e5307ec328b3
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 21:00:34 2015 -0400
+
+    Finished interpreter, some ast
+    
+    Interpreter is fully implemented, but not tested. Action and Command
+    were given getters for use in the interpreter
+
+commit 1d747aaa0b2e36c20d7143e85d2e7fa9c646bc0a
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 20:33:36 2015 -0400
+
+    Interpreter and Outcome
+    
+    More implementation of interpreter and implemented Outcome. Also a one
+    character change to the written_problems
+
+commit 18f6dd9c3ac7f91e080b22ee9d40b0919f1327f2
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 12:53:57 2015 -0400
+
+    More interpreter
+    
+    Added more functionality to interpreter, so now closer to completion.
+    Added getter methods to Sensor class for use in interpreter
+
+commit 817b3ab941b8b64ffdca00c8e1f01434371c3422
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 28 00:10:14 2015 -0400
+
+    More interpreter
+    
+    Added more eval methods that operate on different types of nodes. More
+    structure will be needed
+
+commit 9472b959ee4486d75e6bbf4fba68e62cbe40a364
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Tue Oct 27 23:45:14 2015 -0400
+
+    Interpreter
+    
+    Work done to interpreter interface, method declarations, and interpret
+    method
+
+commit f1ddfdae0ea2b1f70761667d1df66c3c1adf6201
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Tue Oct 27 22:16:45 2015 -0400
+
+    Implemented Load Critter
+    
+    Implemented the load critter method in Console
+
+commit 603973ac9250d7cd8f8f889fe94e394befbaeb6f
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Tue Oct 27 17:31:23 2015 -0400
+
+    Work on written problems
+    
+    Written problems 1-3 are now completed. Written problem 4 is 1/2
+    completed, but needs work still
+
+commit 847cfa30da384536bd08c5a345f5f85e8860fa2d
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Tue Oct 27 11:25:24 2015 -0400
+
+    Fixed General Bugs
+    
+    Added some to tests, simulator, interpret
+
+commit 73b1a917d361d8d65173a4c150e9f2d1b9a01e4d
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Tue Oct 27 10:58:02 2015 -0400
+
+    Changed 1 line
+    
+    in Console
+
+commit 1dfb9a34a20ec2aebe5cb0e134f7bac5e8e9d2ea
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Tue Oct 27 01:05:03 2015 -0400
+
+    Written problems
+    
+    Deleted file of written problems for A4 and added mostly finished
+    written problems for A5
+
+commit 781f75cd67d0b86f98435baa88076fefccc23b71
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Mon Oct 26 18:00:40 2015 -0400
+
+    Small changes to simulation architecture
+    
+    changed the implementations of Hex abstract class and its descendents
+
+commit 07cebe56bae4c7595a371125fd3dddb23db88978
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Mon Oct 26 00:06:29 2015 -0400
+
+    A5 testing
+    
+    Started creating black-box test suite for the classes in simulator and
+    interpret packages
+
+commit c35b34a4e4962861f4ad580d02b250fed314d3d7
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Sun Oct 25 22:23:00 2015 -0400
+
+    Implemented Architecture of Simulator
+    
+    Put in stubs and classes
+
+commit 0baa981b491a9a3add45d475e57018d68baac60c
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Sun Oct 25 16:39:16 2015 -0400
+
+    Implemented Console
+    
+    Using a top-down strategy, I started by implementing stub methods in
+    console.
+
+commit 12ae3b4d74a436d9afda7ee6b6810796073d3422
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Fri Oct 23 17:47:44 2015 -0400
+
+    Working On Mutations
+    
+    Fixing MutationSwap and MutationRemove
+
+commit 4d717c333363bdd8d68549807927b81ad1d681cd
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Sat Oct 17 17:13:03 2015 -0400
+
+    Added A5-release
+    
+    Added the unmodified files from the release
+
+commit 4da13419c2da4459c06b77ae7654fb67fd0ce931
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 23:57:44 2015 -0400
+
+    Final Commit
+    
+    About to submit
+
+commit 0336b5e3161929678b4dd23c9f026e543ea2be0e
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 23:56:45 2015 -0400
+
+    Final overview
+    
+    The final overview.txt document
+
+commit 8eda8e697b6ae4db82d327e83f1750a834850537
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 23:44:50 2015 -0400
+
+    MutationTransform
+    
+    Finished MutationTest
+
+commit fc2171779f03795f31c991e4f8868028a663c6f7
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 23:44:34 2015 -0400
+
+    MutationSwap stuff
+    
+    stuff
+
+commit 14793bada49f4bdf657db73d84b7c8720af62f2c
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 23:11:09 2015 -0400
+
+    Last 3 mutations working
+    
+    Implemented, fixed bugs, and implemented test cases
+
+commit e91874a8e9a7ebf5a737e47ac754885e398123ff
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 22:13:18 2015 -0400
+
+    MutationInsert Done
+    
+    Unit tests implemented and passing all testing
+
+commit 57d9b875241d4d5f9950d2964f4b332b37ed1c5d
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 23:09:59 2015 -0400
+
+    ParserTest change + more
+    
+    ParserTest changed into final form. Discussed in detail in project
+    design overview. Some changes to overview.txt, but not finished
+
+commit 68ae047282883bf83eb9030bc16cc93f109cd8f5
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 22:13:30 2015 -0400
+
+    Added overview file
+    
+    added overview file. Not complete at the time of this commit.
+
+commit 60e0c04b726145a12ef5102ff5f825177cd7d830
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 21:23:59 2015 -0400
+
+    Finished MutationInsert, not tested
+    
+    Haven’t finished testing MutationInsert
+
+commit e2622ff778d86db8cbb6e4627dcb19925f8d9ed6
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 21:22:20 2015 -0400
+
+    Random fixes + new Text file
+    
+    Miscellaneous bug fixes in Mutation classes and creation of a new text
+    file to test mutations
+
+commit a07fc8d78b5defd117e9ead4f2021ee7ba31bc61
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 20:12:27 2015 -0400
+
+    Written Problems
+    
+    Added written_problems.pdf the finished written problems for A4
+
+commit 35d3c56d8e5f42bf4d23b0ab1dacfb283ec61c42
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 18:44:06 2015 -0400
+
+    Working on MutationSwap
+    
+    MutationSwap mutate method done but requires testing. BinaryTerm and
+    BinaryExpr were changed to add their operators as children for use in
+    MutationSwap and to match similar Classes
+
+commit 2843bfbc506ea8bf30152e1594d0549d383fd9f5
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 18:36:06 2015 -0400
+
+    Working on Insertion
+    
+    Small changes nothing done yet
+
+commit 27a104fb3afac433e52bb45587822c238ccdc130
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 18:34:00 2015 -0400
+
+    MutationSwap and BinaryConjunction
+    
+    Added to mutate method of MutationSwap, although it isn’t complete yet.
+    Changed BinaryConjunction constructor to take 2 Conjunctions as
+    children rather than a Conjunction and a Relation
+
+commit 089f6ffc4fc3167bb7c2362726850b46b04607a9
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 17:50:41 2015 -0400
+
+    MutationRemove
+    
+    Mutate method completed but not tested
+
+commit 078203d44aaa87420d0bbde4b50527e0ce9da7f9
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 17:25:22 2015 -0400
+
+    Working on Test Cases
+    
+    Also added to MutationShared
+
+commit b38c70975eb6b685f16488cf120cbc40fbd45256
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 17:15:24 2015 -0400
+
+    Fixing Conflict
+
+commit 5a4ec42a50d8c16dcba5c9eca4df009f09699456
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 17:13:58 2015 -0400
+
+    Added GetParent
+    
+    Added to mutationshared
+
+commit 8ca5a9a5b4ed02c2e62734afaa0f24d7dd3ed6dc
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 17:08:23 2015 -0400
+
+    Add getAllChildren to MutationShared
+    
+    Added a method to get all the children of a given node of a specified
+    type and return them as an array
+
+commit 7440fdab17d1458b299801e6c9fcca96aa3e915b
+Merge: bac4a42 29c947c
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 16:53:24 2015 -0400
+
+    Merge branch 'messing-with-specs'
+
+commit 29c947cb5b5c486a5fb6919b60c18cf6f148217c
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 16:52:32 2015 -0400
+
+    Implemented a shared class
+    
+    MutationShared was implemented and changed spec
+
+commit bac4a428b82e1fa46a66325525b568c871c3063d
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 16:37:03 2015 -0400
+
+    Small Changes
+    
+    Planning to fork in order to mess with the specs
+
+commit e06fe07ffe767042158412b02b659fbf7f244b6a
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 13:03:54 2015 -0400
+
+    MutationRemove changes
+    
+    Added to first mutation (MutationRemove), but not complete.
+
+commit 90223150d19241eefb5c4ab80f9d871e45301d65
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 16:08:17 2015 -0400
+
+    Fixed a couple Bugs
+    
+    Some unexpected behavior from MutationDuplicate revealed a bug in the
+    AST construction, which I fixed
+
+commit f67d332fadb353371e6f378be56d1f8bb5900028
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 15:49:50 2015 -0400
+
+    MutationDuplicate Finished
+    
+    Finished implementing and testing MutationDuplicate method. Started
+    creating test suite for modules.
+
+commit 02fed0fdc77ddb41fed15993a34edce3998ce2e6
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 13:02:59 2015 -0400
+
+    MutationDuplicate Fixes
+    
+    Fixed the MutationDuplicate class so that it accepts a node as input
+    rather than a program and mutates that node
+
+commit 31fe59c6c94d9b1b20851024bda894687d292bab
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 12:31:33 2015 -0400
+
+    Revert "getType() in ast"
+    
+    This reverts commit bc2b4c4c4dc3a338cd34573b484b754949463d15.
+
+commit bc2b4c4c4dc3a338cd34573b484b754949463d15
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 12:24:36 2015 -0400
+
+    getType() in ast
+    
+    Added a getType method to all of the different types of nodes. This
+    method returns a string representation of what type of node they are.
+    This method was added to help with mutations.
+
+commit 503ead52ed11d56f6d3e6e87fde3b15272305bbb
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 07:00:03 2015 -0400
+
+    Mutations and Bugs
+    
+    Mostly created skeletons of mutation classes. Some bug fixes in
+    ASTNode. ParserTest changes don’t mean much, the comments in the class
+    explain this well.
+
+commit be6ba959577f71f45b1cb12a30755084a815dcd3
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 01:51:21 2015 -0400
+
+    Pretty Printing and more
+    
+    Implemented pretty printing for all of ast. ParserTest updated to
+    include pretty printing. Parser has small fix where first rule wasn’t
+    added to program
+
+commit fe5b56f3707f2279d14555dad64541c264a28916
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 00:27:31 2015 -0400
+
+    Added i++
+    
+    That is all
+
+commit 7878024ec612d5ff12b172fd26eddfdc08043272
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Thu Oct 15 00:22:11 2015 -0400
+
+    Mostly Mutations
+    
+    Implemented but did not yet test MutationDuplicate class, and small
+    fixes to AST
+
+commit f7d8c26a59c94a6dfc4d81412a912a067ec7f0ff
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Thu Oct 15 00:18:02 2015 -0400
+
+    ParserImpl
+    
+    ParserImpl is now running as expected in current tests. More testing is
+    required to make sure it works as intended.
+
+commit 227706ac1edba11caedcf40d6d031fcc2f79941a
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 23:33:03 2015 -0400
+
+    Mutations and Parser
+    
+    Started on mutations and continues fixing parser, although parser isn’t
+    working as intended yet
+
+commit 64541cbbeddf53ed7d460d556d97a7c3df7923fb
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 14 23:06:30 2015 -0400
+
+    Unit Tests
+    
+    Fixed unit tests so they can read files, added a simple test file
+
+commit e72cbc9563c94d67c3bd18a63db44381d764dbc1
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 22:36:02 2015 -0400
+
+    Testing and ParserFactory
+    
+    Started a junit test suite for testing Parser in new package test. Also
+    implemented ParserFactory. And added text files for testing.
+
+commit d16883bc663a04e4a93c57c7496bb32e5c6c35bc
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 21:59:44 2015 -0400
+
+    Parser
+    
+    Mostly complete version of parser. Might have problems with throwing
+    syntax errors. Needs testing. Also some minor changes to ast classes
+    Action and Sensor
+
+commit 58d2e944f719acf202192deff0700ffe002e060d
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 21:27:26 2015 -0400
+
+    More AST and Parser
+    
+    More changes to parser, but still not complete. Added a class for
+    Command in the ast package, and commented Update. Added functionality
+    to token making it possible to convert memsugar syntax into mem[int]
+    syntax more easily in the parser.
+
+commit d2218c65fe52f0e1fa5e8131eb05d25ce0dce9e7
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 14 21:24:48 2015 -0400
+
+    2 small changes
+    
+    Changes in memFactor
+
+commit a96540f52f395e7cfa27d4524be6de92942c820a
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 14 21:20:29 2015 -0400
+
+    Subclassed Factor
+    
+    Implemented MemFactor, NegFactor, NumFactor, SensorFactor, SingleFactor.
+    
+    Distributed the constructors previously in factor to these and made
+    factor an Abstract Class
+
+commit b2f7067e2f1f1edc0e1036132ec1a47812ade28c
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 20:57:46 2015 -0400
+
+    Changes to parser and ast classes
+    
+    ParserImpl is closer to being completed. Changed the definitions of
+    some AST classes
+
+commit becff6eccfa2f1d7d8f64d9abf5ca7497fa1aaae
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 14 17:05:41 2015 -0400
+
+    Added majority of AST classes
+    
+    Huge Commit
+
+commit 45da62dc910d5e4def16910233dd760b69088355
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 13:25:32 2015 -0400
+
+    Change ParserImpl
+    
+    More slight changes to the skeletons of ParserImpl, specifically within
+    the parseCondition and parseConjunction methods.
+
+commit a8ba2777b39d08e9a4023681df2ef5263a0afafd
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Wed Oct 14 12:49:19 2015 -0400
+
+    Changed parseConjunction
+    
+    A small change to the skeleton outline of parseConjunction in ParserImpl
+
+commit 47861583552a86cd00d167672e498808d036c7d1
+Author: Jack Solon <jps386@cornell.edu>
+Date:   Tue Oct 13 21:00:08 2015 -0400
+
+    ParserImpl and Tokenizer changed
+    
+    Added to Tokenizer to handle java-style comments, but this needs to be
+    tested. Added to ParserImpl so that it is close to completion and is a
+    detailed skeleton of how it will eventually look, but requires the
+    classes in the ast package to be completed before it can be fully
+    completed
+
+commit 69777fcbb277e3ce7b0e68ebd1b4790f15509cd9
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Wed Oct 14 12:09:02 2015 -0400
+
+    Written Problem #1
+
+commit 956c2711b00cdd0a684fc161229d010740bcfadd
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Mon Oct 12 20:34:09 2015 -0400
+
+    ASTNode Impl
+    
+    Added untested implementations of Node that are shared across all types
+    of AST Nodes.
+
+commit ed701a8919ed1173bbdb38eddead482fbe903b02
+Author: Listeral <jackpertschuk@gmail.com>
+Date:   Mon Oct 5 11:50:04 2015 -0400
+
+    Vanilla A4 Release
+    
+    Initial commit, no changes have been made.

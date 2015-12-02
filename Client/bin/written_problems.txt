@@ -1,0 +1,28 @@
+Written Problems
+jps386 and jp954
+
+1.
+public TVBool or(TVBool that) {
+	TVBool result = new TVBool();
+	result.state = Math.max(this.state,that.state);
+	return result;
+}
+
+2. The specification for state says that the value is true if positive, false if negative, and unknown if zero. Given this specification, the normalize() method is correct because even though the value of state is changed, what that value represents stays the same as any positive value remains positive, and any negative value remains negative. The not() method is correct because the new result object’s state is being set for the first time, as the default constructor of TVBool doesn’t give the state a value (it is unknown), so this implementation doesn’t change the new TVBool object, it just gives the unknown state a value.
+
+3. The hashCode() method is incorrect because it doesn’t currently agree with the equals() method because the current hashCode() method will return different hashCodes for TVBool objects with the respective states 1 and 2, even though these two objects both represent the same value (true). Shown below are the correct implementations of both equals() and hashCode().
+
+public boolean equals(Object o) {
+	if (o instanceof TVBool) {
+		TVBool that = (TVBool) o;
+		normalize();
+		that.normalize();
+		return this.state == that.state;
+	}
+	return false;
+}
+
+public int hashCode() {
+	normalize();
+	return state;
+}

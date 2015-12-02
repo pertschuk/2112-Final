@@ -1,0 +1,1 @@
+{ENERGY > SIZE and SIZE * 400 < 7} --> grow;

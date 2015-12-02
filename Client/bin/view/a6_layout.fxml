@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.00000681152596" prefWidth="671.000199999995" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.ApplicationController">
+  <children>
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <SplitPane dividerPositions="0.7690476190476191" focusTraversable="true" orientation="VERTICAL" pickOnBounds="true" prefHeight="422.0" prefWidth="233.0" HBox.hgrow="NEVER">
+          <items>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="320.0" prefWidth="235.0">
+              <children>
+                <Label fx:id="species" layoutX="14.0" layoutY="10.0" prefWidth="124.0" text="" />
+                <TextArea fx:id="program" editable="false" layoutX="14.0" pickOnBounds="true" prefHeight="80.6894506239891" prefWidth="201.0" wrapText="true" AnchorPane.bottomAnchor="179.0" AnchorPane.topAnchor="60.31" />
+                <ListView fx:id="mem" layoutX="21.0" prefHeight="151.0" prefWidth="184.0" AnchorPane.bottomAnchor="16.0" />
+                <Label fx:id="lastrule" layoutX="14.0" prefHeight="31.999900000002526" prefWidth="201.0" text="" AnchorPane.topAnchor="26.0">
+                  <font>
+                    <Font size="11.0" />
+                  </font>
+                </Label>
+              </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
+              <children>
+                <Pane prefHeight="36.0" prefWidth="227.5" AnchorPane.bottomAnchor="39.72" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="23.5" AnchorPane.topAnchor="14.28">
+                  <children>
+                    <Slider fx:id="slider" layoutX="61.0" layoutY="38.0" onMouseDragged="#setSpeed" onMousePressed="#setSpeed" onMouseReleased="#setSpeed" prefWidth="118.0" />
+                    <Label fx:id="speedlabel" layoutX="94.0" layoutY="52.0" text="0" />
+                    <Label layoutX="14.0" layoutY="37.0" text="Speed" />
+                    <Button fx:id="steponce" layoutX="114.0" layoutY="0.0" mnemonicParsing="false" onMouseClicked="#runOnce" text="Step Once" />
+                    <Button fx:id="runbutton" layoutX="13.0" layoutY="0.0" mnemonicParsing="false" onMouseClicked="#startWorld" text="Start/Stop" />
+                  </children>
+                </Pane>
+              </children>
+            </AnchorPane>
+          </items>
+          <HBox.margin>
+            <Insets />
+          </HBox.margin>
+        </SplitPane>
+        <AnchorPane id="map" minHeight="0.0" minWidth="0.0" prefHeight="420.0" prefWidth="392.0" HBox.hgrow="ALWAYS">
+          <children>
+            <ScrollPane id="ScrollPane" fitToHeight="true" fitToWidth="true" prefViewportHeight="363.0" prefViewportWidth="418.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="45.0">
+              <content>
+                <Pane id="he" fx:id="hexmap" prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <Label fx:id="errors" layoutX="0.0" layoutY="0.0" opacity="1.0" prefHeight="15.199981689453125" prefWidth="124.0" text="" textFill="#ff3333">
+                      <effect>
+                        <Glow />
+                      </effect>
+                    </Label>
+                  </children>
+                </Pane>
+              </content>
+            </ScrollPane>
+            <Button mnemonicParsing="false" onMouseClicked="#critterDialogue" text="Load Critter" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="9.0" />
+            <Label fx:id="currentstep" prefWidth="87.0" text="" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="30.0" />
+            <Label fx:id="numcritters" prefWidth="87.0" text="" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="14.0" />
+            <Button mnemonicParsing="false" onMouseClicked="#worldDialogue" text="Load World" AnchorPane.leftAnchor="224.0" AnchorPane.topAnchor="9.0" />
+            <Button layoutX="113.0" layoutY="9.0" mnemonicParsing="false" onAction="#randomCritterDialogue" text="Load Critters" />
+            <Button layoutX="364.0" layoutY="9.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#zoomOut" prefWidth="33.0" text="-" />
+            <Button layoutX="331.0" layoutY="9.0" mnemonicParsing="false" onAction="#zoomIn" text="+" />
+          </children>
+        </AnchorPane>
+      </children>
+    </HBox>
+  </children>
+</AnchorPane>

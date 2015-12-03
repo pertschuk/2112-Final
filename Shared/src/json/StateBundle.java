@@ -13,7 +13,6 @@ public class StateBundle {
 	public int rows, columns;
 	public int[] dead_critters;
 	public HexBundle[] state;
-	public StateBundle(Simulator s, int since, int now){
-		state = s.getDiffs(since, now);
+	public StateBundle(){
 	}
 }

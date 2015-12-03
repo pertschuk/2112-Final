@@ -48,4 +48,8 @@ public class HexBundle {
 	public HexBundle(Hex h) {
 		// TODO Auto-generated constructor stub
 	}
+	public Hex toHex() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

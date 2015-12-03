@@ -7,21 +7,6 @@ import simulator.Critter;
 import simulator.Hex;
 
 public class Bundles {
-	/**
-	 * JSON bundle that represents the state of the world.
-	 * Serialized and sent to the client and then deserialized
-	 * @author jack
-	 *
-	 */
-	public static class StateBundle {
-		 private ArrayList<Hex> updates = new ArrayList<Hex>();
-		 private int step;
-		 
-		 public StateBundle(int step, Collection<Hex> updates){
-			 this.step = step;
-			 updates.addAll(updates);
-		 }
-	}
 	
 	/**
 	 * JSON bundle that represent an update of the server
@@ -30,11 +15,9 @@ public class Bundles {
 	 */
 	public static class CritterBundle {
 		private ArrayList<Critter> critters = new ArrayList<Critter>();
-		private int auth;
 		
-		public CritterBundle(ArrayList<Critter> newcritters, int auth){
+		public CritterBundle(ArrayList<Critter> newcritters){
 			this.critters = newcritters;
-			this.auth = auth;
 		}
 		public ArrayList<Critter> getCritters(){
 			return critters;
@@ -48,13 +31,26 @@ public class Bundles {
 	 */
 	public static class WorldBundle {
 		private String world;
-		private int auth;
 		
-		public WorldBundle(String world, int auth){
+		public WorldBundle(String world){
 			this.world = world;
 		}
 		public String getWorld(){
 			return world;
+		}
+	}
+	
+	public static class StepBundle {
+		public int count;
+		public StepBundle (int steps){
+			count = steps;
+		}
+	}
+	
+	public static class RateBundle {
+		public int rate;
+		public RateBundle(int rate) {
+			this.rate = rate;
 		}
 	}
 }

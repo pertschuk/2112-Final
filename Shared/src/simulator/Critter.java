@@ -25,6 +25,9 @@ public class Critter extends Hex{
 	private int direction;
 	private static Random random = new Random();
 	public Rule lastrule;
+	public int id;
+	
+	private static int nextid = 0;
 	
 	/**
 	 * Default critter 
@@ -42,6 +45,8 @@ public class Critter extends Hex{
 		this.mem = mem;
 		this.direction = d;
 		this.species = species;
+		this.id = nextid;
+		nextid ++;
 	}
 	/**
 	 * Loads critter from file

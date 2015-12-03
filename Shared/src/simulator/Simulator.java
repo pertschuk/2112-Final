@@ -16,6 +16,7 @@ import ast.Program;
 import interpret.Interpreter;
 import interpret.InterpreterImpl;
 import json.HexBundle;
+import json.StateBundle;
 
 /**
  * Instances of this class represent worlds according to the project specification. 
@@ -40,6 +41,8 @@ public class Simulator {
 	private Random r = new Random();
 	
 	private int timestep;
+	private int version;
+	private ArrayList<ArrayList<Integer>> deadcritters = new ArrayList<ArrayList<Integer>>();
 	
 	private ArrayList<Critter> critters = new ArrayList<Critter>();
 	
@@ -129,6 +132,9 @@ public class Simulator {
 	 */
 	public void step(){
 		this.timestep ++;
+		this.deadcritters.add(new ArrayList<Integer>());
+		ArrayList<Hex> newupdates = new ArrayList<Hex>();
+		this.updates.add(newupdates);
 		Outcome outcome;
 		ArrayList<Critter> allcritters = (ArrayList<Critter>) critters.clone();
 		for (Critter c: allcritters){
@@ -140,6 +146,7 @@ public class Simulator {
 				if (outcome.getType().equals("tag")){
 					if (inFront(c) instanceof Critter){
 						c.setMem(6, outcome.getValue()); // tags critter
+						newupdates.add(c);
 					}
 					else {
 						//do nothing
@@ -155,26 +162,34 @@ public class Simulator {
 						c.decreaseEnergy(outcome.getValue());
 					}
 					else {
-						//do nothing
+						continue;
 					}
+					newupdates.add(map[c.getCol()][c.getRow() + 1]);
+					newupdates.add(c);
 				}
 			}
 			else {
 				if (outcome.getType().equals("wait")){
 					c.addEnergy(c.getMem(3)*SOLAR_FLUX);
+					newupdates.add(c);
 				}
 				else if (outcome.getType().equals("forward")) {
 					c.decreaseEnergy(c.getMem(3) * MOVE_COST);
 					if (this.senseNearby(0, c) == 0 && map[c.getCoords()[0]][c.getCoords()[1] + 1] != null){
 						map[c.getCoords()[0]][c.getCoords()[1]] = null;
+						newupdates.add(new Empty(c.getCoords()[0], c.getCoords()[1])); //add empty hex
+						newupdates.add(c);
 						c.setLocation(c.getCoords()[0], c.getCoords()[1] + 1);
 						map[c.getCoords()[0]][c.getCoords()[1]] = c;
+	
 					}
 				}
 				else if (outcome.getType().equals("backward")) {
 					c.decreaseEnergy(c.getMem(3) * MOVE_COST);
 					if (this.senseNearby(3, c) == 0 && map[c.getCoords()[0]][c.getCoords()[1] - 1] != null){
 						map[c.getCoords()[0]][c.getCoords()[1]] = null;
+						newupdates.add(new Empty(c.getCoords()[0], c.getCoords()[1])); //add empty hex
+						newupdates.add(c);
 						c.setLocation(c.getCoords()[0], c.getCoords()[1] - 1);
 						map[c.getCoords()[0]][c.getCoords()[1]] = c;
 					}
@@ -183,10 +198,12 @@ public class Simulator {
 					//POSSIBLY decrease "small" amount of energy
 					c.decreaseEnergy(c.getMem(3));
 					c.turn(-1);
+					newupdates.add(c);
 				}
 				else if (outcome.getType().equals("right")) {
 					c.decreaseEnergy(c.getMem(3));
 					c.turn(1);
+					newupdates.add(c);
 				}
 				else if (outcome.getType().equals("eat")) {
 					int food = this.senseNearby(0, c);
@@ -194,6 +211,9 @@ public class Simulator {
 						food = -food - 1;
 						int eaten = c.addEnergy(food);
 						((Food) map[c.getCol()][c.getRow() + 1]).setFood(food - eaten);
+						if (food < eaten)
+							newupdates.add(new Empty(c.getCol(), c.getRow() + 1)); //add empty hex
+						newupdates.add(c);
 					}
 				}
 				else if (outcome.getType().equals("attack")) {
@@ -206,6 +226,8 @@ public class Simulator {
 						double damage = BASE_DAMAGE * c1.getMem(3) * 
 								(1/ (1 + Math.pow(Math.E, -(DAMAGE_INC * (c1.getMem(3)*c1.getMem(2) - c2.getMem(3)*c2.getMem(1))))));
 						c2.setMem(3, c2.getMem(3) - (int) damage);
+						newupdates.add(c1);
+						newupdates.add(c2);
 						this.isDead(c2);
 					}
 					else {
@@ -215,11 +237,14 @@ public class Simulator {
 				else if (outcome.getType().equals("grow")) {
 					c.decreaseEnergy(c.getMem(3) * c.complexity() * GROW_COST);
 					c.setMem(3, c.getMem(3) + 1);
+					newupdates.add(c);
 				}
 				else if (outcome.getType().equals("bud")) {
 					c.decreaseEnergy(BUD_COST * c.complexity());
 					Critter child = c.bud();
 					placeCritter(child);
+					newupdates.add(child);
+					newupdates.add(c);
 				}
 				else if (outcome.getType().equals("mate")) {
 					c.decreaseEnergy(MATE_COST * c.complexity());
@@ -227,9 +252,6 @@ public class Simulator {
 					if (infront instanceof Critter){
 						Critter child = c.mate((Critter) map[c.getCol()][c.getRow() + 1]);
 						this.placeCritter(child);
-					}
-					else {
-						//do nothing, cannot mate
 					}
 				}
 			}
@@ -539,6 +561,8 @@ public class Simulator {
 			//kill the critter, put food on the hex
 			map[c2.getCol()][c2.getRow()] = new Food(c2.getCol(), c2.getRow(), c2.getMem(3) * FOOD_PER_SIZE);
 			this.critters.remove(c2);
+			this.deadcritters.get(this.timestep).add(c2.id); // possibly change to version
+			this.updates.get(timestep).add(map[c2.getCol()][c2.getRow()]);
 			return true;
 		}
 		else {
@@ -563,7 +587,7 @@ public class Simulator {
 		for (int i = 0; i < columns; i ++){
 			for (int j = 0; j < rows; j++){
 				if (map[i][j] != null){
-				newmap[i][j] = map[i][j].sense();
+					newmap[i][j] = map[i][j].sense();
 				}
 				else {
 					newmap[i][j] = 0;
@@ -639,4 +663,75 @@ public class Simulator {
 		}
 		return bundles.toArray(bundlearray);
 	}
+	
+	public StateBundle bundle(int update_since) {
+		StateBundle state = new StateBundle();
+		state.columns = this.columns;
+		state.rows = this.rows;
+		state.current_timestep = this.timestep;
+		state.current_version_number = this.version;
+		ArrayList<Integer> dead = new ArrayList<Integer>();
+		for (ArrayList<Integer> list: deadcritters.subList(update_since, state.current_version_number)){
+			dead.addAll(list);
+		}
+		int[] deadcritters = new int[dead.size()];
+		for (int i = 0; i < deadcritters.length; i ++){
+			deadcritters[i] = dead.get(i);
+		}
+		state.dead_critters = deadcritters;
+		state.population = this.getNumCritters();
+		if (update_since == 0){
+			state.update_since = 0;
+		}
+		state.state = this.getDiffs(update_since, this.version);
+		
+		return state;
+	}
+	/**
+	 * Statebundle for specific region of map
+	 * @param from_row
+	 * @param to_row
+	 * @param from_column
+	 * @param to_column
+	 * @param update_since
+	 * @return
+	 */
+	public StateBundle bundle(int from_row, int to_row, int from_column, int to_column, int update_since) {
+		StateBundle state = this.bundle(update_since);
+		HexBundle[] updates = state.state;
+		ArrayList<HexBundle> updatesinrange = new ArrayList<HexBundle>();
+		for (HexBundle update : updates){
+			if (update.col > from_column && update.col < to_column && update.row > from_row && update.row < to_row){
+				updatesinrange.add(update);
+			}
+		}
+		state.state = updatesinrange.toArray(new HexBundle[updatesinrange.size()]);
+		return state;
+	}
+	public void deleteCritter(int id) {
+		for (Critter c : critters){
+			if (c.id == id){
+				c.setMem(4, -300);
+				isDead(c); // kill off c
+			}
+		}
+		
+	}
+	/**
+	 * For client to update its sim
+	 * @param world
+	 */
+	public void updateWorld(StateBundle world) {
+		this.columns = world.columns;
+		this.rows = world.rows;
+		this.timestep = world.current_timestep;
+		this.version = world.current_version_number;
+		for (int id : world.dead_critters)
+			this.deleteCritter(id);
+		for (HexBundle h : world.state){
+			this.map[h.col][h.row] = h.toHex();
+		}
+		
+	}
+	
 }

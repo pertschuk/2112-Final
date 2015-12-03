@@ -11,12 +11,14 @@ public class RingBuffer<E> implements BlockingQueue<E> {
 	int head;
 	int tail;
 	boolean hasSpace;
+	Lock lock;
 	
 	public RingBuffer(int cap) {
 		queue = (E[]) new Object[cap];//change later
 		head = 0;
 		tail = 0;
 		hasSpace = true;
+		lock = new RingBufferLock();
 	}
 	
 	@Override
@@ -139,6 +141,24 @@ public class RingBuffer<E> implements BlockingQueue<E> {
 	/* A lock for this ring buffer implementation */
 	public static class RingBufferLock implements Lock {
 		
+		boolean hasSpace = true;
+		
+		public void lock() {
+			synchronized(this) {
+				while (!hasSpace) {
+					try {
+						this.wait();
+					} catch (Exception e) {} }
+				hasSpace = false;
+			}
+		}
+		
+		public void unlock() {
+			synchronized(this) {
+				hasSpace = true;
+				this.notifyAll();
+			}
+		}
 	}
 	
 	/* An iterator for this ring buffer implementation */

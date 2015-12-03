@@ -18,6 +18,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Shared/shared-1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

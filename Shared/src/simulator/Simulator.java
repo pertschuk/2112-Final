@@ -15,6 +15,7 @@ import java.util.Random;
 import ast.Program;
 import interpret.Interpreter;
 import interpret.InterpreterImpl;
+import json.HexBundle;
 
 /**
  * Instances of this class represent worlds according to the project specification. 
@@ -626,11 +627,16 @@ public class Simulator {
 	 * @param end
 	 * @return 
 	 */
-	public Collection<Hex> getDiffs(int start, int end) {
+	public HexBundle[] getDiffs(int start, int end) {
 		ArrayList<Hex> diffs = new ArrayList<Hex>();
 		for (int i = start; i < end; i++){
 			diffs.addAll(this.updates.get(i));
 		}
-		return diffs;
+		ArrayList<HexBundle> bundles = new ArrayList<HexBundle>();
+		HexBundle[] bundlearray = new HexBundle[5];
+		for (Hex h : diffs){
+			bundles.add(new HexBundle(h));
+		}
+		return bundles.toArray(bundlearray);
 	}
 }

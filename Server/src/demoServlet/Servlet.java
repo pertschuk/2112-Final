@@ -1,9 +1,6 @@
 package demoServlet;
 
 import java.io.BufferedReader;
-
-import JSON.*;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,6 +13,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,12 +27,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import json.*;
 import simulator.*;
 
 /**
  * Servlet implementation class
  */
-@WebServlet("/") /* relative URL path to servlet (under package name 'demoServlet'). */
+@WebServlet("/") /* relative URL path to servlet. */
 public class Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -42,7 +41,7 @@ public class Servlet extends HttpServlet {
 	
 	private int step;
 	
-	private ArrayList<String> adminkeys = new ArrayList<String>();
+	private HashMap<Integer, String> keys = new HashMap<Integer, String>();
 	
 	/**
 	 * Handle GET request
@@ -52,30 +51,43 @@ public class Servlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		//TODO: IMPLEMENT
-		int curstep = 0;
-		
-		Gson gson = new Gson();
-		response.addHeader("Content-Type", "application/json");
-		PrintWriter w = response.getWriter();
+
 		
 		int steps = 0;
 		//Retrieves the GET parameters from the URL, looks for step
 		Map<String, String[]> parameterNames = request.getParameterMap();
-	        for (Entry<String, String[]> entry : parameterNames.entrySet()) {
+		Gson gson = new Gson();
+		response.addHeader("Content-Type", "application/json");
+		
+		switch(request.getRequestURI()){
+		case "/world":
+			//get world
+		}
+	    for (Entry<String, String[]> entry : parameterNames.entrySet()) {
+	    	int session_id;
+	    	String level;
 	            switch (entry.getKey()) {
 	            case "steps":
 	                steps = Integer.parseInt(entry.getValue()[0]);
 	                break;
-	         }
-		}
+	            case "session_id":
+	            	session_id = Integer.parseInt(entry.getValue()[0]);
+	            	if (this.keys.containsKey(session_id)){
+	            		level = keys.get(session_id);
+	            	}
+	            }
+	    }
+  
 		for (int i = 0; i < steps; i++){
 			sim.step();
 			step++;
 		}
 		//delta compression
-		Collection<Hex> diffs = sim.getDiffs(step, curstep);
+		HexBundle[] diffs = sim.getDiffs(step, 0);
 		
-		Bundles.StateBundle state = new Bundles.StateBundle(getStep(), diffs );
+		StateBundle state = new StateBundle(this.sim, step, 0);
+
+		PrintWriter w = response.getWriter();
 		
 		String json = gson.toJson(state);
 		//write the JSON
@@ -93,22 +105,46 @@ public class Servlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		int session_id = 0;
+		String level = "";
 		response.addHeader("Content-Type", "text/plain");
 		Gson gson = new Gson();
 		BufferedReader r = request.getReader();
 		Map<String, String[]> parameterNames = request.getParameterMap();
-        for (Entry<String, String[]> entry : parameterNames.entrySet()) {
+		for (Entry<String, String[]> entry : parameterNames.entrySet()) {
             switch (entry.getKey()) {
-            case "world":
-            	Bundles.WorldBundle world = gson.fromJson(r, Bundles.WorldBundle.class);
-            	UpdateWorld(world);
+            case "session_id":
+            	session_id = Integer.parseInt(entry.getValue()[0]);
+            	if (this.keys.containsKey(session_id))
+            		level = keys.get(session_id);
                 break;
-            case "critters":
-            	Bundles.CritterBundle critters = gson.fromJson(r, Bundles.CritterBundle.class);
-            	AddCritters(critters);
-            	break;
             }
 		}
+		switch(request.getRequestURI()){
+		case "/login":
+			//login
+		case "/critters":
+			//post critters
+		case "/step":
+			//step once if run is 0
+		case "/run":
+			//set the rate the server is running at
+		default:
+			if (request.getPathInfo().matches("/login/\\d+")){
+				int id = Integer.parseInt(request.getPathInfo().split("/")[2]);
+			}
+			if (request.getPathInfo().matches("/world/create_entity\\d+")){
+				
+			}
+		}
+		
+	}
+	
+	/**
+	 * Delete critter
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
+		
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 package client;
 
-import JSON.Bundles;
+import json.Bundles;
 
 /**
  * 

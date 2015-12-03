@@ -51,9 +51,9 @@ public class ApplicationView extends Application implements Observer<Event>{
 		mapview = new Pane[map.length][map[0].length];
 		hexes = new Polygon[map.length][map[0].length];
 		drawMap(map, controller.hexmap());
-		
 		primaryStage.setScene(scene);
-		primaryStage.show();
+		//loader = new FXMLLoader(getClass().getResource("login_layout.fxml"));
+		controller.setStage(primaryStage);
 	}
 
 	@Override

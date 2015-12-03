@@ -7,11 +7,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-import JSON.Bundles;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import com.google.gson.Gson;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +35,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -31,12 +43,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import json.Bundles;
+import json.LoginBundle;
+import json.LoginResponseBundle;
 import simulator.*;
 
 import client.*;
 
 public class ApplicationController implements Observable<Event> {
 	
+	private Stage primaryStage;
 	private Simulator s;
 	private LinkedList<Observer<Event>> observers = new LinkedList<Observer<Event>>();
 	private int step;
@@ -54,16 +70,62 @@ public class ApplicationController implements Observable<Event> {
 	@FXML private Label numcritters;
 	@FXML private Label errors;
 	@FXML private Label lastrule;
+	@FXML private Button login;
+	//components of login stage
+	@FXML private Button submit;
+	@FXML private TextField url;
+	@FXML private PasswordField password;
+	@FXML private TextField level;
 	
 	private boolean running;
 	
-	private int auth = 0;
+	private int auth = 0; // default no auth credentials
+	private String remote;
+	private CloseableHttpClient client = HttpClients.createDefault();
+	private int lastupdated;
+	private Gson gson = new Gson();
+
 	
 	private int zoom;
 	
 	private Random random = new Random();
 	
 	@FXML public void initialize(){
+		Stage newStage = new Stage();
+		VBox comp = new VBox(8);
+		
+		url = new TextField();
+		password = new PasswordField();
+		level = new TextField();
+		
+		url.setPromptText("Enter URL");
+		level.setPromptText("Level");
+		password.setPromptText("Password");
+
+		Button submit = new Button();
+		submit.setPadding(new Insets(10,10,10,10));
+		submit.setText("Login");
+		submit.setAlignment(Pos.CENTER);
+		comp.getChildren().add(url);
+		comp.getChildren().add(level);
+		comp.getChildren().add(password);
+		comp.getChildren().add(submit);
+		comp.setPadding(new Insets(10,10,10,10));
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					login();
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		Scene stageScene = new Scene(comp, 300, 160);
+		newStage.setScene(stageScene);
+		newStage.show();
 	}
 	
 	public Pane hexmap (){
@@ -380,5 +442,43 @@ public class ApplicationController implements Observable<Event> {
 		critterfile.getExtensionFilters().add(filter);
 		File file = critterfile.showOpenDialog(stage);
 		return file;
+	}
+	
+	@FXML public void login() throws UnsupportedEncodingException{
+		String url = this.url.getText() + "/login";
+		String password = this.password.getText();
+		HttpPost post = new HttpPost(url);
+		LoginBundle login = new LoginBundle(password, level.getText());
+		post.setEntity(new StringEntity(gson.toJson(login)));
+		post.addHeader("Content-Type", "application/json");
+		try {
+			CloseableHttpResponse response = client.execute(post);
+			String body = IOUtils.toString(response.getEntity().getContent());
+			LoginResponseBundle res = gson.fromJson(body, LoginResponseBundle.class);
+			auth = res.session_id;
+			this.remote = this.url.getText();
+			this.primaryStage.show();
+			UpdateState();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void UpdateState() {
+		HttpGet get = new HttpGet(this.remote + "/world?session_id=" + this.auth + "?update_since" + this.lastupdated);
+		try {
+			HttpResponse res = this.client.execute(get);
+			String body = IOUtils.toString(res.getEntity().getContent());
+			Bundles.WorldBundle world = gson.fromJson(body, Bundles.WorldBundle.class);
+			//this.lastupdated = 
+			//update current simulator
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void setStage(Stage stage){
+		this.primaryStage = stage;
 	}
 }

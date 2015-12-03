@@ -2,6 +2,8 @@ package demoServlet;
 
 import java.io.BufferedReader;
 
+import JSON.*;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,57 +43,6 @@ public class Servlet extends HttpServlet {
 	private int step;
 	
 	private ArrayList<String> adminkeys = new ArrayList<String>();
-
-	/**
-	 * JSON bundle that represents the state of the world.
-	 * Serialized and sent to the client and then deserialized
-	 * @author jack
-	 *
-	 */
-	class StateBundle {
-		 private ArrayList<Hex> updates = new ArrayList<Hex>();
-		 private int step;
-		 
-		 public StateBundle(int step, Collection<Hex> updates){
-			 this.step = step;
-			 updates.addAll(updates);
-		 }
-	}
-	
-	/**
-	 * JSON bundle that represent an update of the server
-	 * by the client
-	 * @author jack
-	 */
-	private class CritterBundle {
-		private ArrayList<Critter> critters = new ArrayList<Critter>();
-		private int auth;
-		
-		public CritterBundle(ArrayList<Critter> newcritters, int auth){
-			this.critters = newcritters;
-			this.auth = auth;
-		}
-		public ArrayList<Critter> getCritters(){
-			return critters;
-		}
-	}
-	
-	/**
-	 * Represents an entire new world state.
-	 * Can be sent to server.
-	 * @author jack
-	 */
-	private class WorldBundle {
-		private String world;
-		private int auth;
-		
-		public WorldBundle(String world){
-			this.world = world;
-		}
-		public String getWorld(){
-			return world;
-		}
-	}
 	
 	/**
 	 * Handle GET request
@@ -108,7 +59,7 @@ public class Servlet extends HttpServlet {
 		PrintWriter w = response.getWriter();
 		
 		int steps = 0;
-		//retreives the GET parameters from the URL, looks for step
+		//Retrieves the GET parameters from the URL, looks for step
 		Map<String, String[]> parameterNames = request.getParameterMap();
 	        for (Entry<String, String[]> entry : parameterNames.entrySet()) {
 	            switch (entry.getKey()) {
@@ -124,7 +75,7 @@ public class Servlet extends HttpServlet {
 		//delta compression
 		Collection<Hex> diffs = sim.getDiffs(step, curstep);
 		
-		StateBundle state = new StateBundle(getStep(), diffs );
+		Bundles.StateBundle state = new Bundles.StateBundle(getStep(), diffs );
 		
 		String json = gson.toJson(state);
 		//write the JSON
@@ -149,11 +100,11 @@ public class Servlet extends HttpServlet {
         for (Entry<String, String[]> entry : parameterNames.entrySet()) {
             switch (entry.getKey()) {
             case "world":
-            	WorldBundle world = gson.fromJson(r, WorldBundle.class);
+            	Bundles.WorldBundle world = gson.fromJson(r, Bundles.WorldBundle.class);
             	UpdateWorld(world);
                 break;
             case "critters":
-            	CritterBundle critters = gson.fromJson(r, CritterBundle.class);
+            	Bundles.CritterBundle critters = gson.fromJson(r, Bundles.CritterBundle.class);
             	AddCritters(critters);
             	break;
             }
@@ -164,7 +115,7 @@ public class Servlet extends HttpServlet {
 	 * Adds critters to the world
 	 * @param critters CritterBundle of critters
 	 */
-	private void AddCritters(CritterBundle critters) {
+	private void AddCritters(Bundles.CritterBundle critters) {
 		for (Critter c : critters.getCritters()){
 			this.sim.placeCritter(c);
 		}
@@ -175,7 +126,7 @@ public class Servlet extends HttpServlet {
 	 * @param world
 	 * @throws IOException 
 	 */
-	private void UpdateWorld(WorldBundle world) throws IOException {
+	private void UpdateWorld(Bundles.WorldBundle world) throws IOException {
 		InputStream input = new ByteArrayInputStream(world.getWorld().getBytes());
 		BufferedReader br = new BufferedReader(new InputStreamReader(input));
 		Simulator s = new Simulator(br);

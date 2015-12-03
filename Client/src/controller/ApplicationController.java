@@ -2,11 +2,16 @@ package controller;
 
 import view.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
+import JSON.Bundles;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +32,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import simulator.*;
+
+import client.*;
 
 public class ApplicationController implements Observable<Event> {
 	
@@ -49,6 +56,8 @@ public class ApplicationController implements Observable<Event> {
 	@FXML private Label lastrule;
 	
 	private boolean running;
+	
+	private int auth = 0;
 	
 	private int zoom;
 	
@@ -259,9 +268,13 @@ public class ApplicationController implements Observable<Event> {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
-					//System.out.println(Integer.parseInt(col.getText()) + ", " + Integer.parseInt(row.getText()) );
-					s.placeCritter(Critter.loadCritter(file.getPath(), random.nextInt(6), s, Integer.parseInt(col.getText()), Integer.parseInt(row.getText())));
-					step(0);
+					Critter c = Critter.loadCritter(file.getPath(), random.nextInt(6), s, Integer.parseInt(col.getText()), Integer.parseInt(row.getText()));
+					ArrayList<Critter> critters = new ArrayList<Critter>();
+					critters.add(c);
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, auth); // add auth
+					Post.CritterPost(bundle); // sends the critter bundle to the server
+					//step(0);
+					newStage.hide();
 				} catch (NumberFormatException e) {
 					errors.setText("Invalid Number");
 					newStage.hide();
@@ -282,14 +295,18 @@ public class ApplicationController implements Observable<Event> {
 	 * Loads world
 	 */
 	@FXML public void worldDialogue() {
-		ApplicationController controller = this;
 		Stage newStage = new Stage();
 		newStage.show();
 		File file = fileDialogue(newStage); // load file
 		try {
-			Simulator newsim = new Simulator(file);
-			controller.s = newsim;
-			controller.notifyAllObservers(new LoadMapEvent(controller.s.getMap()));
+			String line;
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			StringBuilder sb = new StringBuilder();
+			while ((line = br.readLine())!= null){
+				sb.append(line);
+			}
+			Bundles.WorldBundle world = new Bundles.WorldBundle(sb.toString(), auth);
+			Post.WorldPost(world);
 			newStage.hide();
 		}
 		catch (IOException e) {
@@ -303,7 +320,7 @@ public class ApplicationController implements Observable<Event> {
 		view.UpdateMap(getMap(), this.hexmap);
 	}
 	/**
-	 * 
+	 * Dialogue for placing a random critter in the world
 	 */
 	@FXML public void randomCritterDialogue(){
 		Stage newStage = new Stage();
@@ -322,10 +339,12 @@ public class ApplicationController implements Observable<Event> {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
+					ArrayList<Critter> critters = new ArrayList<Critter>();
 					for (int i = 0; i < Integer.parseInt(num.getText()); i ++){
-						s.addCritter(Critter.loadCritter(file.getPath(), random.nextInt(6), s, 1, 2));
-						step(0);
+						critters.add(Critter.loadCritter(file.getPath(), random.nextInt(6), s, 1, 2));
 					}
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, auth); // add auth
+					Post.CritterPost(bundle);
 				} catch (NumberFormatException e) {
 					errors.setText("Invalid Number");
 					newStage.hide();

@@ -420,11 +420,13 @@ public class Simulator {
 	 * 			0 otherwise
 	 */
 	public int smell(Critter c) {
-		int dist = 0, dir = c.getDir();
-		LinkedList<Hex> queue = new LinkedList<Hex>();
-		queue.add(c);
-		while (dist <= MAX_SMELL_DISTANCE && !queue.isEmpty()) {
-			Hex h = queue.remove();
+		int dir = c.getDir();
+		//queue is a llist of object arrays of size two of format {hex,distance}
+		LinkedList<Object[]> queue = new LinkedList<Object[]>();
+		queue.add({c,0});
+		while ((int)queue.getFirst()[1] <= MAX_SMELL_DISTANCE && !queue.isEmpty()) {
+			Object[] cur = queue.remove();
+			Hex h = (Hex)cur[0];
 			//change the direction if the hex is a critter and has a dir
 			if (h instanceof Critter) dir = ((Critter) h).getDir();
 			if (h instanceof Food) {
@@ -433,17 +435,15 @@ public class Simulator {
 			//add hex ahead of h and two hexes that are turns if they arent already in the array
 			Hex ahead = ahead(h, dir);
 			if (ahead != null && !(ahead instanceof Rock) && queue.contains(ahead))
-				queue.add(ahead);
+				queue.add({ahead,cur[1]+1});
 			
 			Critter temp = new Critter(h.getCol(), h.getRow(), c.program(), c.getMemArray(),
 					c.getSpecies(), (dir+1)%6);
-			if (queue.contains(temp)) queue.add(temp);
+			if (queue.contains(temp)) queue.add({temp,cur[1]+1});
 			
 			temp = new Critter(c.getCol(), c.getRow(), c.program(), c.getMemArray(),
 					c.getSpecies(), (dir==0) ? dir-1 : 5);
-			if (queue.contains(temp)) queue.add(temp);
-			
-			dist++; //wrong atm
+			if (queue.contains(temp)) queue.add({temp,cur[1]+1});
 		}
 		return 1000000;
 	}

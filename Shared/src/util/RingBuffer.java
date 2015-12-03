@@ -7,87 +7,161 @@ import java.util.concurrent.TimeUnit;
 
 /** An implementation of RingBuffer that implements the BlockingQueue interface */
 public class RingBuffer<E> implements BlockingQueue<E> {
-	private E[] queue;
-	private int head;
-	private int tail;
+	E[] queue;
+	int head;
+	int tail;
+	boolean hasSpace;
 	
-	public RingBuffer() {
-		queue = (E[]) new Object[4];//change later
+	public RingBuffer(int cap) {
+		queue = (E[]) new Object[cap];//change later
 		head = 0;
 		tail = 0;
+		hasSpace = true;
 	}
 	
 	@Override
 	public boolean add(Object e) {
-		// TODO Auto-generated method stub
+		if (size() < queue.length) {
+			queue[tail] = (E) e;
+			tail = (tail + 1) % queue.length;
+			if (tail == head) hasSpace = false;
+			return true;
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
+		for (E elem : queue) {
+			if (elem != null && elem.equals(o)) return true;
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
+		if (o instanceof RingBuffer<E>) {
+			RingBuffer<E> other = (RingBuffer<E>) o;
+			return (size() == other.size());
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return size() == 0;
 	}
 	
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		int size = Math.abs(tail-head);
+		//case where head = tail because full ring buffer
+		if (size == 0 && queue[head] != null) return queue.length;
+		return size;
 	}
 
 	@Override
 	public Iterator iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new RingBufferIterator<E>(this);
 	}
 	
 	@Override
+	public boolean remove(Object o) {
+		for (int i = Math.min(head,tail); i <= Math.max(head, tail); i++) {
+			if (queue[i].equals(o)) {
+				if (i == head)
+					head = (head+1) % queue.length;
+				else if (i == tail)
+					tail = (tail-1 < 0 ? queue.length-1 : tail-1);
+				queue[i] = null;
+				hasSpace = true;
+				return true;
+			}
+		}
+		return false;
+	}
+	/*
+	public boolean remove() {
+		if (queue[head] != null) {
+			queue[head] = null;
+			head = (head+1)%queue.length;
+			return true;
+		}
+		return false;
+	}
+	*/
+	@Override
 	public E remove() {
-		// TODO Auto-generated method stub
+		if (queue[head] != null) {
+			E temp = queue[head];
+			head++;
+			queue[head-1] = null;
+			hasSpace = true;
+			return temp;
+		}
 		return null;
 	}
 
 	@Override
 	public E poll() {
-		// TODO Auto-generated method stub
-		return null;
+		E temp = queue[head];
+		queue[head] = null;
+		return temp;
 	}
 
 	@Override
 	public void put(Object e) throws InterruptedException {
-		// TODO Auto-generated method stub
-		
+		lock.lock();
+		try { add(e); }
+		finally { lock.unlock(); }
 	}
 	
 	@Override
-	public E element() {
-		// TODO Auto-generated method stub
-		return null;
+	public E element() throws NoSuchElementException {
+		if (isEmpty()) throw new NoSuchElementException();
+		return queue[head];
 	}
 
 	@Override
 	public boolean offer(Object e) {
-		// TODO Auto-generated method stub
+		if (hasSpace) {
+			add(e);
+			return true;
+		}
 		return false;
 	}
 	
 	@Override
 	public E peek() {
-		// TODO Auto-generated method stub
-		return null;
+		return queue[head];
 	}
-
+	
+	/* A lock for this ring buffer implementation */
+	public static class RingBufferLock implements Lock {
+		
+	}
+	
+	/* An iterator for this ring buffer implementation */
+	public static class RingBufferIterator<E> implements Iterator<E> {
+		private final RingBuffer rb;
+		
+		public RingBufferIterator(RingBuffer rb) {
+			this.rb = rb;
+		}
+		
+		public boolean hasNext() {
+			if (!rb.isEmpty()) return true;
+			return false;
+		}
+		
+		public E next() {
+			return rb.remove();
+		}
+		
+		public void remove() {
+			throw new UnsupportedOperationException;
+		}
+	}
 	
 	/** Do these need to be implemented? */
 	@Override
@@ -142,12 +216,6 @@ public class RingBuffer<E> implements BlockingQueue<E> {
 	public int remainingCapacity() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

@@ -187,7 +187,8 @@ public class Servlet extends HttpServlet {
 			this.sim = s;
 			//add code to push to clients
 		case "/world/create_entity":
-			
+			HexBundle hex = gson.fromJson(body, HexBundle.class);
+			sim.updateWorld(hex);
 		default:
 			if (request.getPathInfo().matches("/critter/\\d+")){
 				int id = Integer.parseInt(request.getPathInfo().split("/")[2]);

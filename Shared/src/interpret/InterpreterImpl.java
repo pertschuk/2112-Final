@@ -24,7 +24,7 @@ public class InterpreterImpl implements Interpreter {
 		Node[] rules = p.children();
 		while (pass < MAX_PASSES) {
 			for (Node r : rules) {
-				c.lastrule = (Rule) r;
+				c.lastrule = r.toString();
 				boolean temp = eval((Condition)r.children()[0],c);
 				
 				//System.out.println(temp);

@@ -48,9 +48,8 @@ public class Bundles {
 	 */
 	public static class WorldBundle {
 		private String world;
-		private int auth;
 		
-		public WorldBundle(String world, int auth){
+		public WorldBundle(String world){
 			this.world = world;
 		}
 		public String getWorld(){

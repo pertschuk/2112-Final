@@ -745,5 +745,8 @@ public class Simulator {
 		}
 		
 	}
+	public ArrayList<Critter> critters() {
+		return this.critters;
+	}
 	
 }

@@ -81,6 +81,7 @@ public class ApplicationController implements Observable<Event> {
 	private boolean running;
 	
 	private int auth = 0; // default no auth credentials
+	private String authlevel = "read";
 	private String remote;
 	private int lastupdated;
 	private Gson gson = new Gson();
@@ -209,7 +210,7 @@ public class ApplicationController implements Observable<Event> {
 			ObservableList<String> contents = FXCollections.observableArrayList("Mem Length: " + m[0], 
 					"Defense: " + m[1],
 					"Offense: " + m[2],
-					"Size: " + m [3],
+					"Size: " + m[3],
 					"Energy: " + m[4],
 					"Pass: " + m[5],
 					"Tag: " + m[6],
@@ -298,16 +299,6 @@ public class ApplicationController implements Observable<Event> {
 	public int getSpeed() { return speed; }
 	
 	/**
-	 * Steps n iterations (according to slider)
-	 */
-	@FXML public void runOnce(){
-		//step((int)(slider.getValue()/slider.getMax()) * 60);
-		step(1);
-		errors.setText("");
-		errors.toFront();
-	}
-	
-	/**
 	 * Load critter at specific location
 	 */
 	@FXML public void critterDialogue(){
@@ -334,7 +325,7 @@ public class ApplicationController implements Observable<Event> {
 					Critter c = Critter.loadCritter(file.getPath(), random.nextInt(6), s, Integer.parseInt(col.getText()), Integer.parseInt(row.getText()));
 					ArrayList<Critter> critters = new ArrayList<Critter>();
 					critters.add(c);
-					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters); // add auth
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, controller.auth, controller.authlevel); // add auth
 					Http.doPost(controller.remote + "/critters", bundle); // sends the critter bundle to the server
 					//step(0);
 					newStage.hide();
@@ -406,6 +397,7 @@ public class ApplicationController implements Observable<Event> {
 		comp.setPadding(new Insets(10,10,10,10));
 		String remote = this.remote;
 		int session_id = this.auth;
+		ApplicationController controller = this;
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -414,8 +406,8 @@ public class ApplicationController implements Observable<Event> {
 					for (int i = 0; i < Integer.parseInt(num.getText()); i ++){
 						critters.add(Critter.loadCritter(file.getPath(), random.nextInt(6), s, 1, 2));
 					}
-					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters); // add auth
-					Http.doPost(remote + "/critters?" + session_id, bundle);
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, controller.auth, controller.authlevel); // add auth
+					Http.doPost(remote + "/critters?session_id=" + session_id, bundle);
 				} catch (NumberFormatException e) {
 					errors.setText("Invalid Number");
 					newStage.hide();
@@ -462,6 +454,7 @@ public class ApplicationController implements Observable<Event> {
 			auth = res.session_id;
 			System.out.println("Logging in user " + auth);
 			this.remote = this.url.getText();
+			this.authlevel = level.getText();
 			this.primaryStage.show();
 			UpdateState();
 		} catch (IOException e) {
@@ -471,7 +464,7 @@ public class ApplicationController implements Observable<Event> {
 	}
 
 	private void UpdateState() {
-		String url = this.remote + "/world?session_id=" + this.auth + "?update_since" + this.lastupdated;
+		String url = this.remote + "/world?session_id=" + this.auth + "?update_since=" + this.lastupdated;
 		try {
 			StateBundle world = gson.fromJson(Http.doGet(url), StateBundle.class);
 			s.updateWorld(world);

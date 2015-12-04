@@ -24,8 +24,9 @@ public class Critter extends Hex{
 	private String species;
 	private int direction;
 	private static Random random = new Random();
-	public Rule lastrule;
+	public String lastrule;
 	public int id;
+	public int uid;
 	
 	private static int nextid = 0;
 	
@@ -112,7 +113,7 @@ public class Critter extends Hex{
 		sb.append(this.program().prettyPrint(sb));
 		sb.append("\n--------\nLast Rule Executed: \n--------\n");
 		if (lastrule != null){
-			sb.append(this.lastrule.prettyPrint(sb));
+			sb.append(this.lastrule);
 		}
 		else
 			sb.append("None");
@@ -246,7 +247,7 @@ public class Critter extends Hex{
 		info[0] = species;
 		info[1] = p.prettyPrint(new StringBuilder()).toString();
 		if (lastrule != null){
-			info[2] = lastrule.prettyPrint(new StringBuilder()).toString();
+			info[2] = lastrule;
 		} else { info[2] = "";}
 		return info;
 	}

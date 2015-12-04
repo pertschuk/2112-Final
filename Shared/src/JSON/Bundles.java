@@ -14,13 +14,19 @@ public class Bundles {
 	 * @author jack
 	 */
 	public static class CritterBundle {
-		private ArrayList<Critter> critters = new ArrayList<Critter>();
+		public HexBundle[] hexes;
 		
-		public CritterBundle(ArrayList<Critter> newcritters){
-			this.critters = newcritters;
-		}
-		public ArrayList<Critter> getCritters(){
-			return critters;
+		public CritterBundle(ArrayList<Critter> newcritters, int uid, String level){
+			hexes = new HexBundle[newcritters.size()];
+			int i = 0;
+			for (Critter c : newcritters){
+				if (c.uid == uid || level.equals("admin"))
+					hexes[i] = new HexBundle(c);
+				else{
+					hexes[i] = new HexBundle(c, true);
+				}
+					
+			}
 		}
 	}
 	

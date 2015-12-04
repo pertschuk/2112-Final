@@ -64,7 +64,6 @@ public class Servlet extends HttpServlet {
 		//TODO: IMPLEMENT
 
 		
-		int steps = 0;
 		//Retrieves the GET parameters from the URL, looks for step
 		Map<String, String[]> parameterNames = request.getParameterMap();
 		Gson gson = new Gson();
@@ -72,12 +71,9 @@ public class Servlet extends HttpServlet {
 		String level = "read";
 		int from_row = -1, to_row = -1, from_column = -1, to_column = -1;
 		int update_since = 0;
+		int session_id = 0;
 	    for (Entry<String, String[]> entry : parameterNames.entrySet()) {
-	    	int session_id;
 	            switch (entry.getKey()) {
-	            case "steps":
-	                steps = Integer.parseInt(entry.getValue()[0]);
-	                break;
 	            case "session_id":
 	            	session_id = Integer.parseInt(entry.getValue()[0]);
 	            	if (this.keys.containsKey(session_id)){
@@ -116,6 +112,13 @@ public class Servlet extends HttpServlet {
 			w.flush();
 			w.close();
 			response.setStatus(200);
+		case "/critters":
+			Bundles.CritterBundle critters = new Bundles.CritterBundle(sim.critters(), session_id, level);
+			String critterjson = gson.toJson(critters);
+			w.println(critterjson);
+			w.flush();
+			w.close();
+			response.setStatus(200);			
 		default:
 			// default stuff
 		}
@@ -183,12 +186,11 @@ public class Servlet extends HttpServlet {
 			Simulator s = new Simulator(new BufferedReader( new InputStreamReader(new ByteArrayInputStream(worldstring.getBytes()))));
 			this.sim = s;
 			//add code to push to clients
+		case "/world/create_entity":
+			
 		default:
 			if (request.getPathInfo().matches("/critter/\\d+")){
 				int id = Integer.parseInt(request.getPathInfo().split("/")[2]);
-			}
-			if (request.getPathInfo().matches("/world/create_entity\\d+")){
-				
 			}
 		}
 	}
@@ -218,8 +220,8 @@ public class Servlet extends HttpServlet {
 	 * @param critters CritterBundle of critters
 	 */
 	private void AddCritters(Bundles.CritterBundle critters) {
-		for (Critter c : critters.getCritters()){
-			this.sim.placeCritter(c);
+		for (HexBundle h  : critters.hexes){
+			this.sim.placeCritter((Critter)h.toHex());
 		}
 	}
 	

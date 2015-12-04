@@ -46,6 +46,7 @@ import javafx.stage.Stage;
 import json.Bundles;
 import json.LoginBundle;
 import json.LoginResponseBundle;
+import json.StateBundle;
 import simulator.*;
 
 import client.*;
@@ -81,7 +82,6 @@ public class ApplicationController implements Observable<Event> {
 	
 	private int auth = 0; // default no auth credentials
 	private String remote;
-	private CloseableHttpClient client = HttpClients.createDefault();
 	private int lastupdated;
 	private Gson gson = new Gson();
 
@@ -308,7 +308,7 @@ public class ApplicationController implements Observable<Event> {
 	}
 	
 	/**
-	 * 
+	 * Load critter at specific location
 	 */
 	@FXML public void critterDialogue(){
 		Stage newStage = new Stage();
@@ -326,6 +326,7 @@ public class ApplicationController implements Observable<Event> {
 		comp.getChildren().add(row);
 		comp.getChildren().add(submit);
 		comp.setPadding(new Insets(10,10,10,10));
+		ApplicationController controller = this;
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -333,8 +334,8 @@ public class ApplicationController implements Observable<Event> {
 					Critter c = Critter.loadCritter(file.getPath(), random.nextInt(6), s, Integer.parseInt(col.getText()), Integer.parseInt(row.getText()));
 					ArrayList<Critter> critters = new ArrayList<Critter>();
 					critters.add(c);
-					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, auth); // add auth
-					Post.CritterPost(bundle); // sends the critter bundle to the server
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters); // add auth
+					Http.doPost(controller.remote + "/critters", bundle); // sends the critter bundle to the server
 					//step(0);
 					newStage.hide();
 				} catch (NumberFormatException e) {
@@ -360,6 +361,7 @@ public class ApplicationController implements Observable<Event> {
 		Stage newStage = new Stage();
 		newStage.show();
 		File file = fileDialogue(newStage); // load file
+		ApplicationController controller = this;
 		try {
 			String line;
 			BufferedReader br = new BufferedReader(new FileReader(file));
@@ -367,8 +369,13 @@ public class ApplicationController implements Observable<Event> {
 			while ((line = br.readLine())!= null){
 				sb.append(line);
 			}
-			Bundles.WorldBundle world = new Bundles.WorldBundle(sb.toString(), auth);
-			Post.WorldPost(world);
+			Bundles.WorldBundle world = new Bundles.WorldBundle(sb.toString());
+			String response = Http.doPost(controller.remote + "/world?session_id=" + controller.auth, world);
+			if (response.equals("Ok")){
+				//Success!!
+			}
+			else
+				//failure
 			newStage.hide();
 		}
 		catch (IOException e) {
@@ -397,6 +404,8 @@ public class ApplicationController implements Observable<Event> {
 		comp.getChildren().add(num);
 		comp.getChildren().add(submit);
 		comp.setPadding(new Insets(10,10,10,10));
+		String remote = this.remote;
+		int session_id = this.auth;
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -405,8 +414,8 @@ public class ApplicationController implements Observable<Event> {
 					for (int i = 0; i < Integer.parseInt(num.getText()); i ++){
 						critters.add(Critter.loadCritter(file.getPath(), random.nextInt(6), s, 1, 2));
 					}
-					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters, auth); // add auth
-					Post.CritterPost(bundle);
+					Bundles.CritterBundle bundle = new Bundles.CritterBundle(critters); // add auth
+					Http.doPost(remote + "/critters?" + session_id, bundle);
 				} catch (NumberFormatException e) {
 					errors.setText("Invalid Number");
 					newStage.hide();
@@ -446,16 +455,12 @@ public class ApplicationController implements Observable<Event> {
 	
 	@FXML public void login() throws UnsupportedEncodingException{
 		String url = this.url.getText() + "/login";
-		String password = this.password.getText();
-		HttpPost post = new HttpPost(url);
-		LoginBundle login = new LoginBundle(password, level.getText());
-		post.setEntity(new StringEntity(gson.toJson(login)));
-		post.addHeader("Content-Type", "application/json");
+		LoginBundle login = new LoginBundle(password.getText(), level.getText());
 		try {
-			CloseableHttpResponse response = client.execute(post);
-			String body = IOUtils.toString(response.getEntity().getContent());
+			String body = Http.doPost(url, login);
 			LoginResponseBundle res = gson.fromJson(body, LoginResponseBundle.class);
 			auth = res.session_id;
+			System.out.println("Logging in user " + auth);
 			this.remote = this.url.getText();
 			this.primaryStage.show();
 			UpdateState();
@@ -466,15 +471,12 @@ public class ApplicationController implements Observable<Event> {
 	}
 
 	private void UpdateState() {
-		HttpGet get = new HttpGet(this.remote + "/world?session_id=" + this.auth + "?update_since" + this.lastupdated);
+		String url = this.remote + "/world?session_id=" + this.auth + "?update_since" + this.lastupdated;
 		try {
-			HttpResponse res = this.client.execute(get);
-			String body = IOUtils.toString(res.getEntity().getContent());
-			Bundles.WorldBundle world = gson.fromJson(body, Bundles.WorldBundle.class);
-			//this.lastupdated = 
-			//update current simulator
+			StateBundle world = gson.fromJson(Http.doGet(url), StateBundle.class);
+			s.updateWorld(world);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// TODO invalid URL
 			e.printStackTrace();
 		}
 	}

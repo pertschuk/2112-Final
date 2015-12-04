@@ -14,6 +14,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+=======
+	<classpathentry kind="lib" path="/Users/jack/Desktop/2112Final/commons-io-2.4/commons-io-2.4.jar"/>
+>>>>>>> origin/master
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

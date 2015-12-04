@@ -1,0 +1,13 @@
+name smell_test_world
+size 20 20
+
+rock 2 2
+rock 15 8
+rock 7 8
+rock 5 15
+rock 18 15
+
+food 3 5 200
+food 10 7 200
+food 18 19 200
+food 15 2 200

@@ -89,7 +89,8 @@ public class Critter extends Hex{
     	Parser parse = new ParserImpl();
     	Program p = parse.parse(reader);
     	mem[0] = 8;
-    	return new Critter(col, row, p , mem, species, random.nextInt(6));
+    	//return new Critter(col, row, p , mem, species, random.nextInt(6));
+    	return new Critter(col,row,p,mem,species,random.nextInt(6));
 	}
 	/**
 	 * Method returns critical info about the critter

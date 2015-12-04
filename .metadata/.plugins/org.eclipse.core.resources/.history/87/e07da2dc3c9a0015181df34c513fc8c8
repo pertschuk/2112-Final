@@ -1,0 +1,654 @@
+package simulator;
+import interpret.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Random;
+
+import ast.Program;
+import interpret.Interpreter;
+import interpret.InterpreterImpl;
+import json.HexBundle;
+
+/**
+ * Instances of this class represent worlds according to the project specification. 
+ * Methods of this class manage the creation and maintenance of an accurate world simulation.
+ * 
+ * @author Jack Pertschuk
+ *
+ */
+public class Simulator {
+	
+	//constants
+	public static int BASE_DAMAGE, ENERGY_PER_SIZE, 
+	FOOD_PER_SIZE, MAX_SMELL_DISTANCE, ROCK_VALUE, COLUMNS, ROWS, MAX_RULES_PER_TURN,
+	SOLAR_FLUX, MOVE_COST, ATTACK_COST, GROW_COST, BUD_COST, MATE_COST, RULE_COST, ABILITY_COST,
+	INITIAL_ENERGY, MIN_MEMORY;
+	public static double DAMAGE_INC;
+
+	private ArrayList<ArrayList<Hex>> updates = new ArrayList<ArrayList<Hex>>();
+	
+	private Hex[][] map;
+	private int rows, columns;
+	private Random r = new Random();
+	
+	private int timestep;
+	
+	private ArrayList<Critter> critters = new ArrayList<Critter>();
+	
+	private Interpreter interpreter = new InterpreterImpl(this);
+	
+	/**
+	 * Default constructor creates a new world object
+	 * with randomly placed rocks
+	 */
+	public Simulator(){
+		columns = 10; //example values
+		rows = 10;
+		
+		map = new Hex[columns][rows];
+		
+		fillEdges();
+		
+		//fill 10% of the map with randomly placed rocks
+		for (int i = 0; i < rows*columns / 10; i++){
+			int[] coords = emptyCoords();
+			map[coords[0]][coords[1]] = new Rock(coords[0], coords[1]);
+		}
+		loadConstants(); //load constants.txt
+	}
+	public Simulator(File file) throws IOException{
+    	this(new BufferedReader(new FileReader(file)));
+	}
+	
+	/**
+	 * Constructor builds a world based on given file 
+	 * @param file The world file to be loaded into the simulator
+	 * @throws IOException 
+	 */
+	public Simulator(BufferedReader reader) throws IOException {
+    	String curline = this.nextLine(reader);
+    	//System.out.println(curline);
+    	curline = this.nextLine(reader);
+    	int[] size = {Integer.parseInt(curline.split(" ")[1]), Integer.parseInt(curline.split(" ")[2])};
+    	System.out.println(curline);
+    	this.columns = size[0];
+    	this.rows = size[1];
+    	this.map = new Hex[columns][rows];
+    	curline = this.nextLine(reader);
+    	int row, col;
+    	while(curline != null){		
+    		String[] cur = curline.split(" ");
+    		switch(cur[0]){
+    		case "rock":
+    			col = Integer.parseInt(cur[1]);
+        		row = Integer.parseInt(cur[2]);
+    			map[col][row] = new Rock(col, row); break;
+    		case "food":
+    			col = Integer.parseInt(cur[1]);
+        		row = Integer.parseInt(cur[2]);
+    			map[col][row] = new Food(col, row, Integer.parseInt(cur[3])); 
+    			break;
+    		case "critter":
+    			col = Integer.parseInt(cur[2]);
+        		row = Integer.parseInt(cur[3]);
+        		Critter c = Critter.loadCritter(cur[1], Integer.parseInt(cur[4]), this, col, row);
+        		map[col][row] = c; 
+        		this.critters.add(c);
+        		this.placeCritter(c);
+        		break;
+    		}
+    		curline = this.nextLine(reader);
+    	}
+    	fillEdges();
+        loadConstants();
+	}
+	
+	public String nextLine(BufferedReader reader) throws IOException{
+		String curline = reader.readLine();
+		if (curline == null){
+			return null;
+		}
+    	if (curline.length() < 2){
+    		return this.nextLine(reader);
+    	}
+    	if (curline.charAt(0) == '/' && curline.charAt(1) == '/'){
+    		return this.nextLine(reader);
+    	}
+    	return curline;
+	}
+	/**
+	 * Steps one step forward in the simulation
+	 */
+	public void step(){
+		this.timestep ++;
+		Outcome outcome;
+		ArrayList<Critter> allcritters = (ArrayList<Critter>) critters.clone();
+		for (Critter c: allcritters){
+			outcome = c.eval(this.interpreter);
+			if (outcome == null){
+				return; //exceeds max passes
+			}
+			else if (outcome.hasValue()){
+				if (outcome.getType().equals("tag")){
+					if (inFront(c) instanceof Critter){
+						c.setMem(6, outcome.getValue()); // tags critter
+					}
+					else {
+						//do nothing
+					}
+				}
+				else if ( outcome.getType().equals("serve")){
+					if (inFront(c) == null){
+						map[c.getCol()][c.getRow() + 1] = new Food(c.getCol(), c.getRow() + 1, outcome.getValue());
+						c.decreaseEnergy(outcome.getValue());
+					}
+					if (inFront(c) instanceof Food){
+						((Food) map[c.getCol()][c.getRow() + 1]).addFood(outcome.getValue());
+						c.decreaseEnergy(outcome.getValue());
+					}
+					else {
+						//do nothing
+					}
+				}
+			}
+			else {
+				if (outcome.getType().equals("wait")){
+					c.addEnergy(c.getMem(3)*SOLAR_FLUX);
+				}
+				else if (outcome.getType().equals("forward")) {
+					c.decreaseEnergy(c.getMem(3) * MOVE_COST);
+					if (this.senseNearby(0, c) == 0 && map[c.getCoords()[0]][c.getCoords()[1] + 1] != null){
+						map[c.getCoords()[0]][c.getCoords()[1]] = null;
+						c.setLocation(c.getCoords()[0], c.getCoords()[1] + 1);
+						map[c.getCoords()[0]][c.getCoords()[1]] = c;
+					}
+				}
+				else if (outcome.getType().equals("backward")) {
+					c.decreaseEnergy(c.getMem(3) * MOVE_COST);
+					if (this.senseNearby(3, c) == 0 && map[c.getCoords()[0]][c.getCoords()[1] - 1] != null){
+						map[c.getCoords()[0]][c.getCoords()[1]] = null;
+						c.setLocation(c.getCoords()[0], c.getCoords()[1] - 1);
+						map[c.getCoords()[0]][c.getCoords()[1]] = c;
+					}
+				}
+				else if (outcome.getType().equals("left")) {
+					//POSSIBLY decrease "small" amount of energy
+					c.decreaseEnergy(c.getMem(3));
+					c.turn(-1);
+				}
+				else if (outcome.getType().equals("right")) {
+					c.decreaseEnergy(c.getMem(3));
+					c.turn(1);
+				}
+				else if (outcome.getType().equals("eat")) {
+					int food = this.senseNearby(0, c);
+					if (food < -1){
+						food = -food - 1;
+						int eaten = c.addEnergy(food);
+						((Food) map[c.getCol()][c.getRow() + 1]).setFood(food - eaten);
+					}
+				}
+				else if (outcome.getType().equals("attack")) {
+					c.decreaseEnergy(c.getMem(3) * ATTACK_COST);
+					//if its a critter
+					Hex hex =  map[c.getCol()][c.getRow() + 1];
+					if (hex instanceof Critter){
+						Critter c2 = (Critter)  hex;
+						Critter c1 = c;
+						double damage = BASE_DAMAGE * c1.getMem(3) * 
+								(1/ (1 + Math.pow(Math.E, -(DAMAGE_INC * (c1.getMem(3)*c1.getMem(2) - c2.getMem(3)*c2.getMem(1))))));
+						c2.setMem(3, c2.getMem(3) - (int) damage);
+						this.isDead(c2);
+					}
+					else {
+						//do nothing
+					}
+				}
+				else if (outcome.getType().equals("grow")) {
+					c.decreaseEnergy(c.getMem(3) * c.complexity() * GROW_COST);
+					c.setMem(3, c.getMem(3) + 1);
+				}
+				else if (outcome.getType().equals("bud")) {
+					c.decreaseEnergy(BUD_COST * c.complexity());
+					Critter child = c.bud();
+					placeCritter(child);
+				}
+				else if (outcome.getType().equals("mate")) {
+					c.decreaseEnergy(MATE_COST * c.complexity());
+					Hex infront = map[c.getCol()][c.getRow() + 1];
+					if (infront instanceof Critter){
+						Critter child = c.mate((Critter) map[c.getCol()][c.getRow() + 1]);
+						this.placeCritter(child);
+					}
+					else {
+						//do nothing, cannot mate
+					}
+				}
+			}
+			//checks to see if its dead
+			this.isDead(c);
+			c.setMem(4, c.getMem(4) + SOLAR_FLUX);
+		}
+	}
+	
+	public boolean placeCritter(Critter c){
+		//if its empty
+		try{
+			if (map[c.getCol()][c.getRow()] == null){
+				map[c.getCol()][c.getRow()] = c;
+				this.critters.add(c);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Adds specific critter to the world at RANDOM position
+	 * @param c Critter to add to the world.
+	 */
+	public void addCritter(Critter c){
+		//adds critter to a random location in the world
+		int[] coords = emptyCoords();
+		c.setLocation(coords[0], coords[1]);
+		map[coords[0]][coords[1]] = c;
+		critters.add(c);
+	}
+	
+	/**
+	 * @return the current time step, number of critters, and world
+     * map of the simulation.
+	 */
+	public String getInfo(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("The current time step is " + timestep + ".\n");
+		sb.append("There are " + this.critters.size() + " critters in the world.\n");
+		int row, col, crow;
+		for (row = this.rows - this.columns/2; row  > 0; row--){
+			crow = row;
+			for (col = 0; col < this.columns; col += 2){
+				if (map[col][crow]!= null){
+					sb.append(map[col][crow].toString());
+				}
+				else {
+					sb.append("-");
+				}
+				sb.append("   ");
+				crow++;
+			}
+			sb.append("\n");
+			sb.append("  ");
+			crow = row;
+			for (col = 1; col < this.columns; col += 2){
+				if (map[col][crow]!= null){
+					sb.append(map[col][crow].toString());
+				}
+				else {
+					sb.append("-");
+				}
+				sb.append("   ");
+				crow++;
+			}
+			sb.append("\n");
+		}
+		//TODO: print out map	
+		return sb.toString();
+	}
+	
+	/**
+	 * @return description of the contents of hex (c,r).
+     * @param c column of hex
+     * @param r row of hex
+	 */
+	public String getHex(int c, int r) {
+		if (map[c][r] == null) {
+		}
+		else if (map[c][r] instanceof Rock){
+			return "Just a boring rock";
+		}
+		else if (map[c][r] instanceof Food){
+			return "There's " + ((Food) map[c][r]).getFood() + " food on this hex!";
+		}
+		else if (map[c][r] instanceof Critter){
+			return "There's a critter here!" + ((Critter)map[c][r]).getInfo();
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @return Returns random empty coordinates from the simulation
+	 */
+	public int[] emptyCoords(){
+		int[] coords = new int[]{r.nextInt(columns), r.nextInt(rows)};
+		if (map[coords[0]][coords[1]] == null && isValidCoord(coords[0],coords[1])) {
+			return coords;
+		}
+		//recursive call to find empty coordinates
+		else{
+			return emptyCoords();
+		}
+	}
+	
+	//SENSOR METHODS
+	/**
+	 * 
+	 * @param dir
+	 * @param c
+	 * @return
+	 */
+	public int senseNearby(int dir, Critter c){
+		Hex peek = null;
+		dir = (dir + c.getDir()) % 6;
+		try{
+			switch(dir){
+			case 0:
+				peek = this.map[c.getCoords()[0]][c.getCoords()[1] + 1]; break;
+			case 1:
+				peek = this.map[c.getCoords()[0] + 1][c.getCoords()[1] + 1]; break; 
+			case 2:
+				peek = this.map[c.getCoords()[0] + 1][c.getCoords()[1]]; break;
+			case 3:
+				peek = this.map[c.getCoords()[0]][c.getCoords()[1] - 1]; break;
+			case 4:
+				peek = this.map[c.getCoords()[0] - 1][c.getCoords()[1] - 1]; break;
+			case 5:
+				peek = this.map[c.getCoords()[0] - 1][c.getCoords()[1]]; break;
+			}
+			if (peek == null){
+				return 0;
+			}
+			return peek.sense();
+		}
+		catch (ArrayIndexOutOfBoundsException e){
+			return -1;
+		}
+		
+	}
+	/**
+	 * Returns the contents of the hex dist away from the 
+	 * @param dist
+	 * @param c
+	 * @return
+	 */
+	public int senseAhead(int dist, Critter c){
+		try {
+			int[] cur = c.getCoords();
+			for (int i = 0; i < dist; i++){
+				switch(c.getDir()){
+				case 0:
+					cur[0] = cur[0]; cur[1] = cur[1] + 1;
+				case 1:
+					cur[0] = cur[0] + 1; cur[1] = cur[1] + 1;
+				case 2:
+					cur[0] = cur[0] + 1; cur[1] = cur[1];
+				case 3:
+					cur[0] = cur[0]; cur[1] = cur[1] - 1;
+				case 4:
+					cur[0] = cur[0] - 1; cur[1] = cur[1] - 1;
+				case 5:
+					cur[0] = cur[0] - 1; cur[1] = cur[1];
+				}
+			}
+			if (map[cur[0]][cur[1]] == null){
+				return 0;
+			}
+			return map[cur[0]][cur[1]].sense();
+		}
+		catch (ArrayIndexOutOfBoundsException e){
+			return -1;
+		}
+	}
+	
+	/**
+	 * Smell sensor action finds closest food to critter
+	 * @param c  the critter
+	 * @return  dist*1000+dir if food within MAX_SMELL_DISTANCE
+	 * 			0 otherwise
+	 */
+	public int smell(Critter c) {
+		int dir = c.getDir();
+		//queue is a llist of object arrays of size two of format {hex,distance}
+		LinkedList<Object[]> queue = new LinkedList<Object[]>();
+		Object[] qObj = {c,0};
+		queue.add(qObj);
+		while (!queue.isEmpty() && (int)queue.getFirst()[1] <= MAX_SMELL_DISTANCE) {
+			Object[] cur = queue.remove();
+			Hex h = (Hex)cur[0];
+			//change the direction if the hex is a critter and has a dir
+			if (h instanceof Critter) dir = ((Critter) h).getDir();
+			if (h instanceof Food) {
+				return (Integer)cur[1]*1000+(c.getDir()+dir)%6;
+			}
+			//add hex ahead of h and two hexes that are turns if they arent already in the array
+			Hex ahead = ahead(h, dir);
+			if (!(ahead instanceof Rock) && !queue.contains(ahead)) {
+				Object[] t = {ahead, (Integer)cur[1]+1};
+				System.out.println(ahead.getCoords());
+				queue.add(t);
+			}
+			
+			Critter temp = new Critter(h.getCol(), h.getRow(), c.program(), c.getMemArray(),
+					c.getSpecies(), (dir+1)%6);
+			if (!queue.contains(temp)) {
+				Object[] t2 = {temp, (Integer) cur[1]+1};
+				System.out.println(ahead.getCoords());
+				queue.add(t2);
+			}
+			
+			temp = new Critter(c.getCol(), c.getRow(), c.program(), c.getMemArray(),
+					c.getSpecies(), (dir==0) ? dir-1 : 5);
+			if (!queue.contains(temp)) {
+				Object[] t3 = {temp, (Integer) cur[1] + 1};
+				System.out.println(ahead.getCoords());
+				queue.add(t3);
+			}
+		}
+		return 1000000;
+	}
+	
+	/**
+	 * Helper method for smell that gets the coord ahead of hex
+	 * @param h  the hex
+	 * @param dir  the direction
+	 * @return  hex directly ahead of c
+	 * 			a new rock if coord isn't valid
+	 */
+	private Hex ahead(Hex h, int dir) {
+		int[] cur = h.getCoords();
+		switch(dir){
+		case 0:
+			cur[0] = cur[0]; cur[1] = cur[1] + 1;
+		case 1:
+			cur[0] = cur[0] + 1; cur[1] = cur[1] + 1;
+		case 2:
+			cur[0] = cur[0] + 1; cur[1] = cur[1];
+		case 3:
+			cur[0] = cur[0]; cur[1] = cur[1] - 1;
+		case 4:
+			cur[0] = cur[0] - 1; cur[1] = cur[1] - 1;
+		case 5:
+			cur[0] = cur[0] - 1; cur[1] = cur[1];
+		}
+		if (isValidCoord(cur[0],cur[1]))
+			return map[cur[0]][cur[1]];
+		return new Rock(cur[1],cur[0]);
+		
+	}
+	public static void loadConstants(){
+		Reader r;
+		try {
+			r = new FileReader("constants.txt");
+	    	BufferedReader reader = new BufferedReader(r);    	
+	    	String curline = reader.readLine();
+	    	BASE_DAMAGE = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	DAMAGE_INC = Double.parseDouble(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	ENERGY_PER_SIZE = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	FOOD_PER_SIZE = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	MAX_SMELL_DISTANCE = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	ROCK_VALUE = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	COLUMNS = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	ROWS = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	MAX_RULES_PER_TURN = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	SOLAR_FLUX = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	MOVE_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	ATTACK_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	GROW_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	BUD_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	MATE_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	RULE_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	ABILITY_COST = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	INITIAL_ENERGY = Integer.parseInt(curline.split(" ")[1]);
+	    	curline = reader.readLine();
+	    	MIN_MEMORY = Integer.parseInt(curline.split(" ")[1]);
+	    	reader.close();
+	    	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Kills a critter if its energy is less than 1
+	 * @param c2
+	 * @return
+	 */
+	public boolean isDead(Critter c2){
+		if (c2.getMem(4) < 1){
+			//kill the critter, put food on the hex
+			map[c2.getCol()][c2.getRow()] = new Food(c2.getCol(), c2.getRow(), c2.getMem(3) * FOOD_PER_SIZE);
+			this.critters.remove(c2);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns critter in front of Critter c
+	 * @param c
+	 * @return
+	 */
+	public Hex inFront(Critter c){
+		return map[c.getCol()][c.getRow() + 1];
+	}
+	
+	/**
+	 * Returns the map
+	 */
+	public int[][] getMap(){
+		int[][] newmap = new int[this.columns][this.rows];
+		for (int i = 0; i < columns; i ++){
+			for (int j = 0; j < rows; j++){
+				if (map[i][j] != null){
+				newmap[i][j] = map[i][j].sense();
+				}
+				else {
+					newmap[i][j] = 0;
+				}
+			}
+		}
+		return newmap;
+	}
+	
+	/**
+	 * Returns the critter at hex (c,r) if a critter is there
+	 * @param c  column
+	 * @param r	 row
+	 * @return  the critter at hex (c,r), or null if no critter
+	 */
+	public Critter getCritter(int c, int r) {
+		Hex h = map[c][r];
+		if (h instanceof Critter)  return (Critter) h;
+		return null;
+	}
+	
+	/**
+	 * Returns number of critters in this
+	 * @return  int number of critters
+	 */
+	public int getNumCritters() {
+		return critters.size();
+	}
+	
+	public void fillEdges(){
+		for (int c = 0; c < this.columns; c++){
+			for (int r = 0; r < this.rows; r ++){
+				if (!this.isValidCoord(c, r)){
+					this.map[c][r] = new Rock(c, r);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns whether or not hex (c,r) is a valid coord in this
+	 * @param c  col
+	 * @param r  row
+	 * @return  true if valid coor, false otherwise
+	 */
+	public boolean isValidCoord(int c, int r) {
+		if (c >= columns) {
+			return false;
+		} else if (r < 0 || c < 0) {
+			return false;
+		} else if (2*r-c < 0) {
+			return false;
+		} else if (2*r-c >= 2*rows-columns) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * Returns differences between two versions
+	 * @param start
+	 * @param end
+	 * @return 
+	 */
+	public HexBundle[] getDiffs(int start, int end) {
+		ArrayList<Hex> diffs = new ArrayList<Hex>();
+		for (int i = start; i < end; i++){
+			diffs.addAll(this.updates.get(i));
+		}
+		ArrayList<HexBundle> bundles = new ArrayList<HexBundle>();
+		HexBundle[] bundlearray = new HexBundle[5];
+		for (Hex h : diffs){
+			bundles.add(new HexBundle(h));
+		}
+		return bundles.toArray(bundlearray);
+	}
+}

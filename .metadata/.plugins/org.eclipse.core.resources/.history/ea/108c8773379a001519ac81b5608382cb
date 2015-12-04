@@ -1,0 +1,34 @@
+package simulator;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.Test;
+
+public class SmellTester {
+	@Test
+	public static void testSmellOne() {
+		File f = new File("one_food.txt");
+		Simulator sim = null;
+		try {
+			sim = new Simulator(f);
+		} catch (IOException e) {
+			System.out.println("File could not be read");
+		}
+		assertTrue("Simulator object was created", sim!=null);
+		Critter c=null;
+		try {
+			c = Critter.loadCritter("simple_smell_test.txt", 0, sim, 0, 0);
+		} catch (IOException e) {
+			System.out.println("Critter could not be loaded");
+		}
+		assertTrue("Critter was loaded", c!=null);
+		sim.addCritter(c);
+		sim.step(); //critter should step to hex 0,1
+		Critter c2 = sim.getCritter(0, 1);
+		assertTrue("Critter smelled the food and moved", c2 != null);
+		
+	}
+}

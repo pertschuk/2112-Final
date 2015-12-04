@@ -423,27 +423,39 @@ public class Simulator {
 		int dir = c.getDir();
 		//queue is a llist of object arrays of size two of format {hex,distance}
 		LinkedList<Object[]> queue = new LinkedList<Object[]>();
-		queue.add({c,0});
-		while ((int)queue.getFirst()[1] <= MAX_SMELL_DISTANCE && !queue.isEmpty()) {
+		Object[] qObj = {c,0};
+		queue.add(qObj);
+		while (!queue.isEmpty() && (int)queue.getFirst()[1] <= MAX_SMELL_DISTANCE) {
 			Object[] cur = queue.remove();
 			Hex h = (Hex)cur[0];
 			//change the direction if the hex is a critter and has a dir
 			if (h instanceof Critter) dir = ((Critter) h).getDir();
 			if (h instanceof Food) {
-				return dist*1000+(c.getDir()+dir)%6;
+				return (Integer)cur[1]*1000+(c.getDir()+dir)%6;
 			}
 			//add hex ahead of h and two hexes that are turns if they arent already in the array
 			Hex ahead = ahead(h, dir);
-			if (ahead != null && !(ahead instanceof Rock) && queue.contains(ahead))
-				queue.add({ahead,cur[1]+1});
+			if (!(ahead instanceof Rock) && !queue.contains(ahead)) {
+				Object[] t = {ahead, (Integer)cur[1]+1};
+				//System.out.println(ahead.getCoords());
+				queue.add(t);
+			}
 			
 			Critter temp = new Critter(h.getCol(), h.getRow(), c.program(), c.getMemArray(),
 					c.getSpecies(), (dir+1)%6);
-			if (queue.contains(temp)) queue.add({temp,cur[1]+1});
+			if (!queue.contains(temp)) {
+				Object[] t2 = {temp, (Integer) cur[1]+1};
+				//System.out.println(temp.getCoords());
+				queue.add(t2);
+			}
 			
 			temp = new Critter(c.getCol(), c.getRow(), c.program(), c.getMemArray(),
 					c.getSpecies(), (dir==0) ? dir-1 : 5);
-			if (queue.contains(temp)) queue.add({temp,cur[1]+1});
+			if (!queue.contains(temp)) {
+				Object[] t3 = {temp, (Integer) cur[1] + 1};
+				//System.out.println(temp.getCoords());
+				queue.add(t3);
+			}
 		}
 		return 1000000;
 	}
@@ -453,7 +465,7 @@ public class Simulator {
 	 * @param h  the hex
 	 * @param dir  the direction
 	 * @return  hex directly ahead of c
-	 * 			null if coord isn't valid
+	 * 			a new rock if coord isn't valid
 	 */
 	private Hex ahead(Hex h, int dir) {
 		int[] cur = h.getCoords();
@@ -473,7 +485,7 @@ public class Simulator {
 		}
 		if (isValidCoord(cur[0],cur[1]))
 			return map[cur[0]][cur[1]];
-		return null;
+		return new Rock(cur[0],cur[1]);
 		
 	}
 	public static void loadConstants(){

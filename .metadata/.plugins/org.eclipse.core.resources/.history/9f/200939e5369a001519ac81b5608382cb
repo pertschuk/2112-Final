@@ -1,0 +1,14 @@
+package simulator;
+
+import java.io.File;
+
+import org.junit.Test;
+
+public class SmellTester {
+	@Test
+	public static void testSmellOne() {
+		File f = new File("one_food.txt");
+		Simulator sim = new Simulator(f);
+		
+	}
+}

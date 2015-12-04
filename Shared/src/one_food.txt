@@ -1,0 +1,4 @@
+name one_food
+size 20 20
+
+food 0 2 250

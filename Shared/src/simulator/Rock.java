@@ -1,7 +1,7 @@
 package simulator;
 
 public class Rock extends Hex {
-	public Rock(int r, int c) {
+	public Rock(int c, int r) {
 		this.r = r;
 		this.c = c;
 	}

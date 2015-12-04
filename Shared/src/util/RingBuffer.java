@@ -2,6 +2,7 @@ package util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +43,7 @@ public class RingBuffer<E> implements BlockingQueue<E> {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof RingBuffer<E>) {
+		if (o instanceof RingBuffer<?>) {
 			RingBuffer<E> other = (RingBuffer<E>) o;
 			return (size() == other.size());
 		}
@@ -175,79 +176,68 @@ public class RingBuffer<E> implements BlockingQueue<E> {
 		}
 		
 		public E next() {
-			return rb.remove();
+			return (E) rb.remove();
 		}
 		
 		public void remove() {
-			throw new UnsupportedOperationException;
+			throw new UnsupportedOperationException();
 		}
 	}
 	
 	/** Do these need to be implemented? */
 	@Override
 	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Object[] toArray(Object[] a) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean containsAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean addAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean removeAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean retainAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public E take() throws InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int remainingCapacity() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int drainTo(Collection c) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int drainTo(Collection c, int maxElements) {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 
 	
